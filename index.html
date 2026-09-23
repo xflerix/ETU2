@@ -177,7 +177,7 @@
             transform: rotate(180deg);
         }
 
-        /* Выпадающий блок, в котором лежит ВСЁ (платформы, цитата, видео, счетчик) */
+        /* Выпадающий блок релиза */
         .platforms-dropdown {
             max-height: 0;
             overflow: hidden;
@@ -190,6 +190,23 @@
         }
         .platforms-dropdown.show {
             max-height: 1200px;
+            opacity: 1;
+            margin-top: 14px;
+        }
+
+        /* Выпадающий блок дискографии */
+        .discography-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        .discography-dropdown.show {
+            max-height: 400px;
             opacity: 1;
             margin-top: 14px;
         }
@@ -351,7 +368,7 @@
                 <i class="fa-solid fa-chevron-down arrow-icon"></i>
             </div>
             
-            <!-- ВЕСЬ КОНТЕНТ ТРЕКА (платформы, цитата, видео, счетчик), который прячется и открывается вместе -->
+            <!-- Выпадающий блок релиза (платформы, цитата, видео, счетчик) -->
             <div class="platforms-dropdown" id="platformsDropdown">
                 <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
                     <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
@@ -397,7 +414,30 @@
                 </div>
             </div>
 
-            <!-- Контакты остаются в самом низу и спускаются, когда открывается блок трека -->
+            <!-- Раздел: Дискография / Все треки и альбомы -->
+            <div class="section-title">Дискография</div>
+            <div class="link-btn" id="discographyToggle" onclick="toggleDiscography()" style="background: rgba(255, 255, 255, 0.05);">
+                <i class="fa-solid fa-record-vinyl icon" style="color: #a29bfe;"></i>
+                <span>Все треки и альбомы</span>
+                <i class="fa-solid fa-chevron-down arrow-icon" id="discArrow" style="margin-right:0; margin-left:10px; font-size:14px; transition:transform 0.3s ease;"></i>
+            </div>
+
+            <div class="discography-dropdown" id="discographyDropdown">
+                <a href="https://music.yandex.uz/artist/6207325/albums" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
+                    <span>Яндекс Музыка (Все альбомы)</span>
+                </a>
+                <a href="https://music.apple.com/ru/artist/gafur/1478930539" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
+                    <span>Apple Music (Дискография)</span>
+                </a>
+                <a href="https://open.spotify.com/artist/6yF1z2Xn8s73E1G05A5Z5O" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
+                    <span>Spotify (Треки артиста)</span>
+                </a>
+            </div>
+
+            <!-- Контакты -->
             <div class="section-title">Контакты</div>
             <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
                 <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
@@ -416,6 +456,13 @@
             const toggleBtn = document.getElementById('armonToggle');
             dropdown.classList.toggle('show');
             toggleBtn.classList.toggle('active');
+        }
+
+        function toggleDiscography() {
+            const dropdown = document.getElementById('discographyDropdown');
+            const arrow = document.getElementById('discArrow');
+            dropdown.classList.toggle('show');
+            arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
         function sharePage() {
