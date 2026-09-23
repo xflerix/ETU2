@@ -166,18 +166,18 @@
             background: rgba(0, 229, 255, 0.08);
             animation: neonPulse 3s infinite;
         }
-        .armon-main-btn .arrow-icon {
+        .armon-main-btn .arrow-icon, .release-btn .arrow-icon {
             margin-right: 0;
             margin-left: 10px;
             transition: transform 0.3s ease;
             font-size: 14px;
             color: #00e5ff;
         }
-        .armon-main-btn.active .arrow-icon {
+        .armon-main-btn.active .arrow-icon, .release-btn.active .arrow-icon {
             transform: rotate(180deg);
         }
 
-        /* Выпадающий блок релиза */
+        /* Выпадающий блок */
         .platforms-dropdown {
             max-height: 0;
             overflow: hidden;
@@ -190,23 +190,6 @@
         }
         .platforms-dropdown.show {
             max-height: 1200px;
-            opacity: 1;
-            margin-top: 14px;
-        }
-
-        /* Выпадающий блок дискографии */
-        .discography-dropdown {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-            opacity: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-        }
-        .discography-dropdown.show {
-            max-height: 400px;
             opacity: 1;
             margin-top: 14px;
         }
@@ -360,15 +343,14 @@
                 </a>
             </div>
 
-            <!-- Главная кнопка релиза -->
+            <!-- Релиз 1: ARMON (Последний релиз) -->
             <div class="section-title">Последний релиз</div>
-            <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
+            <div class="link-btn armon-main-btn" id="armonToggle" onclick="toggleDropdown('platformsDropdown', 'armonToggle')">
                 <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
                 <span>ARMON (Слушать)</span>
                 <i class="fa-solid fa-chevron-down arrow-icon"></i>
             </div>
             
-            <!-- Выпадающий блок релиза (платформы, цитата, видео, счетчик) -->
             <div class="platforms-dropdown" id="platformsDropdown">
                 <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
                     <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
@@ -399,41 +381,62 @@
                     <span>iTunes</span>
                 </a>
 
-                <!-- Цитата под платформами -->
                 <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
 
-                <!-- Видеоплеер -->
                 <div class="video-container">
                     <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
 
-                <!-- Счетчик просмотров -->
                 <div class="stats-box">
                     <i class="fa-solid fa-fire"></i>
                     <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
                 </div>
             </div>
 
-            <!-- Раздел: Дискография / Все треки и альбомы -->
-            <div class="section-title">Дискография</div>
-            <div class="link-btn" id="discographyToggle" onclick="toggleDiscography()" style="background: rgba(255, 255, 255, 0.05);">
-                <i class="fa-solid fa-record-vinyl icon" style="color: #a29bfe;"></i>
-                <span>Все треки и альбомы</span>
-                <i class="fa-solid fa-chevron-down arrow-icon" id="discArrow" style="margin-right:0; margin-left:10px; font-size:14px; transition:transform 0.3s ease;"></i>
+            <!-- Релиз 2: Альбом KALEIDOSKOP -->
+            <div class="section-title">Альбом</div>
+            <div class="link-btn release-btn" id="kaleidoskopToggle" onclick="toggleDropdown('kaleidoskopDropdown', 'kaleidoskopToggle')">
+                <i class="fa-solid record-vinyl icon" style="color: #a29bfe;"></i>
+                <i class="fa-solid fa-compact-disc icon" style="color: #a29bfe;"></i>
+                <span>KALEIDOSKOP (Альбом)</span>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
             </div>
-
-            <div class="discography-dropdown" id="discographyDropdown">
-                <a href="https://music.yandex.uz/artist/6207325/albums" target="_blank" class="link-btn platform-btn">
+            
+            <div class="platforms-dropdown" id="kaleidoskopDropdown">
+                <a href="https://music.yandex.ru/artist/6207325/albums" target="_blank" class="link-btn platform-btn">
                     <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
-                    <span>Яндекс Музыка (Все альбомы)</span>
-                </a>
-                <a href="https://music.apple.com/ru/artist/gafur/1478930539" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
-                    <span>Apple Music (Дискография)</span>
+                    <span>Яндекс Музыка</span>
                 </a>
                 <a href="https://open.spotify.com/artist/6yF1z2Xn8s73E1G05A5Z5O" target="_blank" class="link-btn platform-btn">
                     <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
-                    <span>Spotify (Треки артиста)</span>
+                    <span>Spotify</span>
+                </a>
+                <a href="https://music.apple.com/ru/artist/gafur/1478930539" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
+                    <span>Apple Music</span>
+                </a>
+            </div>
+
+            <!-- Релиз 3: Хит BONITA -->
+            <div class="section-title">Хит</div>
+            <div class="link-btn release-btn" id="bonitaToggle" onclick="toggleDropdown('bonitaDropdown', 'bonitaToggle')">
+                <i class="fa-solid fa-fire icon" style="color: #ff4757;"></i>
+                <span>BONITA (Слушать)</span>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
+            
+            <div class="platforms-dropdown" id="bonitaDropdown">
+                <a href="https://music.yandex.ru/artist/6207325" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
+                    <span>Яндекс Музыка</span>
+                </a>
+                <a href="https://open.spotify.com/artist/6yF1z2Xn8s73E1G05A5Z5O" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
+                    <span>Spotify</span>
+                </a>
+                <a href="https://music.apple.com/ru/artist/gafur/1478930539" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
+                    <span>Apple Music</span>
                 </a>
             </div>
 
@@ -451,18 +454,11 @@
     </div>
 
     <script>
-        function togglePlatforms() {
-            const dropdown = document.getElementById('platformsDropdown');
-            const toggleBtn = document.getElementById('armonToggle');
+        function toggleDropdown(dropdownId, toggleId) {
+            const dropdown = document.getElementById(dropdownId);
+            const toggleBtn = document.getElementById(toggleId);
             dropdown.classList.toggle('show');
             toggleBtn.classList.toggle('active');
-        }
-
-        function toggleDiscography() {
-            const dropdown = document.getElementById('discographyDropdown');
-            const arrow = document.getElementById('discArrow');
-            dropdown.classList.toggle('show');
-            arrow.style.transform = dropdown.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
         function sharePage() {
