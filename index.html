@@ -114,6 +114,7 @@
             backdrop-filter: blur(12px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
         .link-btn i.icon {
             font-size: 18px;
@@ -155,16 +156,47 @@
             box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
         }
 
+        .armon-main-btn {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(0, 229, 255, 0.4);
+        }
+        .armon-main-btn .arrow-icon {
+            margin-right: 0;
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            color: #00e5ff;
+        }
+        .armon-main-btn.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Выпадающий список платформ */
+        .platforms-dropdown {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 0 5px 0;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+        .platforms-dropdown.show {
+            display: flex;
+        }
+
         .platform-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 14px;
         }
 
         .quote {
             font-size: 12px;
             font-style: italic;
             color: #8c7ae6;
-            margin-top: 6px;
+            margin-top: 10px;
             margin-bottom: 4px;
             text-align: center;
             letter-spacing: 0.5px;
@@ -244,37 +276,45 @@
                 <span>@gafur.lv</span>
             </a>
 
-            <!-- Последний релиз с прямыми ссылками -->
-            <div class="section-title">Последний релиз: ARMON</div>
+            <!-- Кнопка-аккордеон Последний релиз: ARMON -->
+            <div class="section-title">Последний релиз</div>
+            <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
+                <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
+                <span>ARMON (Слушать)</span>
+                <i class="fa-solid fa-chevron-down arrow-icon"></i>
+            </div>
             
-            <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
-                <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
-                <span>Яндекс Музыка</span>
-            </a>
-            <a href="https://open.spotify.com/album/3TeltNzFM08Ot5Y4QK5j5s" target="_blank" class="link-btn platform-btn">
-                <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
-                <span>Spotify</span>
-            </a>
-            <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
-                <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
-                <span>Apple Music</span>
-            </a>
-            <a href="https://music.vk.com/link/eUk2b" target="_blank" class="link-btn platform-btn">
-                <i class="fa-brands fa-vk icon" style="color: #0077ff;"></i>
-                <span>VK Музыка</span>
-            </a>
-            <a href="https://music.mts.ru/album/43425758" target="_blank" class="link-btn platform-btn">
-                <i class="fa-solid fa-headphones icon" style="color: #e30613;"></i>
-                <span>Kion Music</span>
-            </a>
-            <a href="https://www.deezer.com/album/1047727962" target="_blank" class="link-btn platform-btn">
-                <i class="fa-solid <i class="fa-solid fa-compact-disc icon" style="color: #a29bfe;"></i>
-                <span>Deezer</span>
-            </a>
-            <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
-                <i class="fa-brands fa-itunes-note icon" style="color: #ea4335;"></i>
-                <span>iTunes</span>
-            </a>
+            <!-- Выпадающий список платформ -->
+            <div class="platforms-dropdown" id="platformsDropdown">
+                <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
+                    <span>Яндекс Музыка</span>
+                </a>
+                <a href="https://open.spotify.com/album/3TeltNzFM08Ot5Y4QK5j5s" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
+                    <span>Spotify</span>
+                </a>
+                <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
+                    <span>Apple Music</span>
+                </a>
+                <a href="https://music.vk.com/link/eUk2b" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-vk icon" style="color: #0077ff;"></i>
+                    <span>VK Музыка</span>
+                </a>
+                <a href="https://music.mts.ru/album/43425758" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-solid fa-headphones icon" style="color: #e30613;"></i>
+                    <span>Kion Music</span>
+                </a>
+                <a href="https://www.deezer.com/album/1047727962" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-solid fa-compact-disc icon" style="color: #a29bfe;"></i>
+                    <span>Deezer</span>
+                </a>
+                <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
+                    <i class="fa-brands fa-itunes-note icon" style="color: #ea4335;"></i>
+                    <span>iTunes</span>
+                </a>
+            </div>
             
             <!-- Цитата под релизом -->
             <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
@@ -303,6 +343,13 @@
     </div>
 
     <script>
+        function togglePlatforms() {
+            const dropdown = document.getElementById('platformsDropdown');
+            const toggleBtn = document.getElementById('armonToggle');
+            dropdown.classList.toggle('show');
+            toggleBtn.classList.toggle('active');
+        }
+
         function sharePage() {
             if (navigator.share) {
                 navigator.share({
