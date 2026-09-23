@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* Анимация появления элементов снизу вверх */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -83,21 +82,12 @@
         .description {
             font-size: 13px;
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 30px;
             font-weight: 500;
             line-height: 1.5;
             color: #b2bec3;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-        }
-
-        .quote {
-            font-size: 12px;
-            font-style: italic;
-            color: #8c7ae6;
-            margin-bottom: 30px;
-            text-align: center;
-            letter-spacing: 0.5px;
         }
 
         .links-wrapper {
@@ -180,26 +170,21 @@
             letter-spacing: 1px;
         }
 
-        .stats-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
+        /* Цитата из трека под релизом */
+        .quote {
             font-size: 12px;
-            color: #a4b0be;
-            margin-top: 4px;
-        }
-        .stats-box i {
-            color: #ff4757;
+            font-style: italic;
+            color: #8c7ae6;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            width: 100%;
         }
 
+        /* Видеоплеер после релиза */
         .video-container {
-            margin-top: 25px;
+            margin-top: 20px;
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
@@ -212,6 +197,25 @@
             aspect-ratio: 16/9;
             border: none;
             display: block;
+        }
+
+        /* Счетчик просмотров после видео */
+        .stats-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            font-size: 12px;
+            color: #a4b0be;
+            margin-top: 15px;
+        }
+        .stats-box i {
+            color: #ff4757;
         }
 
         footer {
@@ -232,7 +236,6 @@
 
         <h1 class="profile-title">Gafur Demo</h1>
         <p class="description">Самый крупный и официальный фан аккаунт</p>
-        <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
 
         <div class="links-wrapper">
             <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn">
@@ -261,6 +264,15 @@
                 <div class="live-badge">OUT NOW</div>
             </a>
             
+            <!-- Цитата под релизом -->
+            <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
+
+            <!-- Видеоплеер после релиза -->
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+
+            <!-- Счетчик просмотров после видео -->
             <div class="stats-box">
                 <i class="fa-solid fa-fire"></i>
                 <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
@@ -271,10 +283,6 @@
                 <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
                 <span>Booking: +7 912 227 87 47</span>
             </a>
-        </div>
-
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
         <footer>
