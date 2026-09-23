@@ -24,14 +24,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(25px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .container {
@@ -44,6 +38,31 @@
             animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* Кнопка меню (слева сверху) */
+        .menu-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        /* Кнопка поделиться (справа сверху) */
         .share-btn {
             position: absolute;
             top: 0;
@@ -60,11 +79,88 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            z-index: 10;
         }
         .share-btn:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: scale(1.05);
         }
+
+        /* Выдвижное боковое меню */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100%;
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-header {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            color: #00e5ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sidebar-item {
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .sidebar-item:hover {
+            background: rgba(0, 229, 255, 0.1);
+            border-color: rgba(0, 229, 255, 0.3);
+            color: #00e5ff;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+            display: none;
+        }
+        .overlay.show { display: block; }
 
         .profile-title {
             font-size: 26px;
@@ -151,10 +247,6 @@
             border: none;
             box-shadow: 0 4px 20px rgba(37, 117, 252, 0.35);
         }
-        .official-btn:hover {
-            background: linear-gradient(135deg, #7a22db 0%, #3585fc 100%);
-            box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
-        }
 
         @keyframes neonPulse {
             0% { box-shadow: 0 0 5px rgba(0, 229, 255, 0.2), inset 0 0 5px rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.3); }
@@ -177,7 +269,6 @@
             transform: rotate(180deg);
         }
 
-        /* Выпадающий блок со всеми фишками трека */
         .platforms-dropdown {
             max-height: 0;
             overflow: hidden;
@@ -290,9 +381,115 @@
             color: #a4b0be;
             margin-top: 5px;
         }
-        .stats-box i {
-            color: #ff4757;
+        .stats-box i { color: #ff4757; }
+
+        /* Форма сообщений и админка */
+        .page-section {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeInUp 0.5s ease forwards;
         }
+        .page-section.active { display: flex; }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            backdrop-filter: blur(12px);
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 11px;
+            color: #a4b0be;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: #00e5ff;
+        }
+        .form-textarea {
+            resize: none;
+            height: 120px;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #00e5ff 0%, #2575fc 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 14px;
+            color: #000;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
+        }
+        .submit-btn:hover { transform: translateY(-2px); }
+
+        /* Карточка сообщения в админке */
+        .admin-msg-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+        .msg-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #00e5ff;
+            font-weight: 700;
+        }
+        .msg-time {
+            font-size: 10px;
+            color: #636e72;
+            font-weight: 400;
+        }
+        .msg-text {
+            font-size: 13px;
+            color: #dfe6e9;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        .del-msg-btn {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid rgba(255, 71, 87, 0.4);
+            color: #ff4757;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            cursor: pointer;
+            align-self: flex-end;
+            transition: background 0.3s;
+        }
+        .del-msg-btn:hover { background: rgba(255, 71, 87, 0.4); }
 
         footer {
             margin-top: 40px;
@@ -305,7 +502,28 @@
     </style>
 </head>
 <body>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <!-- Выдвижное боковое меню -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span>МЕНЮ САЙТА</span>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-links">
+            <a class="sidebar-item" onclick="switchPage('home')"><i class="fa-solid fa-house" style="color: #00e5ff;"></i> Главная</a>
+            <a class="sidebar-item" onclick="switchPage('message')"><i class="fa-solid fa-paper-plane" style="color: #ff7675;"></i> Сообщение Гафуру</a>
+            <a class="sidebar-item" onclick="switchPage('admin')"><i class="fa-solid fa-lock" style="color: #ffeaa7;"></i> Админ-панель</a>
+        </div>
+    </div>
+
     <div class="container">
+        <!-- Кнопка меню слева -->
+        <button class="menu-btn" onclick="toggleMenu()" title="Меню">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Кнопка поделиться справа -->
         <button class="share-btn" onclick="sharePage()" title="Поделиться">
             <i class="fa-solid fa-share-nodes"></i>
         </button>
@@ -313,95 +531,145 @@
         <h1 class="profile-title">Gafur Demo</h1>
         <p class="description">Самый крупный и официальный фан аккаунт</p>
 
-        <div class="links-wrapper">
-            <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn">
-                <i class="fa-brands fa-instagram icon" style="color: #e1306c;"></i>
-                <span>Instagram</span>
-            </a>
-            <a href="https://youtube.com/@gafurdemo" target="_blank" class="link-btn">
-                <i class="fa-brands fa-youtube icon" style="color: #ff0000;"></i>
-                <span>YouTube</span>
-            </a>
-            <a href="https://tiktok.com/@gafur.demo" target="_blank" class="link-btn">
-                <i class="fa-brands fa-tiktok icon" style="color: #00f2fe;"></i>
-                <span>TikTok</span>
-            </a>
-            
-            <div class="section-title">Официальный аккаунт</div>
-            <a href="https://instagram.com/gafur.lv" target="_blank" class="link-btn official-btn">
-                <i class="fa-solid fa-circle-check icon" style="color: #fff;"></i>
-                <span>@gafur.lv</span>
-            </a>
-
-            <!-- Анонс концерта в Самарканде -->
-            <div class="section-title">Ближайшее событие</div>
-            <div class="concert-card">
-                <div class="concert-title"><i class="fa-solid fa-calendar-days"></i> Концерт в Самарканде</div>
-                <div class="concert-info"><strong>17 октября</strong> • Family Park<br>New Art Show</div>
-                <a href="https://iticket.uz/events/concerts/new-art-show-gsamarkand/54270" target="_blank" class="concert-btn">
-                    <i class="fa-solid fa-ticket"></i> Купить билеты
+        <!-- РАЗДЕЛ 1: ГЛАВНАЯ -->
+        <div class="page-section active" id="page-home">
+            <div class="links-wrapper">
+                <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn">
+                    <i class="fa-brands fa-instagram icon" style="color: #e1306c;"></i>
+                    <span>Instagram</span>
                 </a>
-            </div>
-
-            <!-- Главная кнопка релиза ARMON -->
-            <div class="section-title">Последний релиз</div>
-            <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
-                <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
-                <span>ARMON (Слушать)</span>
-                <i class="fa-solid fa-chevron-down arrow-icon"></i>
-            </div>
-            
-            <!-- Выпадающий блок (платформы, цитата, видео, счетчик) -->
-            <div class="platforms-dropdown" id="platformsDropdown">
-                <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
-                    <span>Яндекс Музыка</span>
+                <a href="https://youtube.com/@gafurdemo" target="_blank" class="link-btn">
+                    <i class="fa-brands fa-youtube icon" style="color: #ff0000;"></i>
+                    <span>YouTube</span>
                 </a>
-                <a href="https://open.spotify.com/album/3TeltNzFM08Ot5Y4QK5j5s" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
-                    <span>Spotify</span>
+                <a href="https://tiktok.com/@gafur.demo" target="_blank" class="link-btn">
+                    <i class="fa-brands fa-tiktok icon" style="color: #00f2fe;"></i>
+                    <span>TikTok</span>
                 </a>
-                <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
-                    <span>Apple Music</span>
-                </a>
-                <a href="https://music.vk.com/link/eUk2b" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-brands fa-vk icon" style="color: #0077ff;"></i>
-                    <span>VK Музыка</span>
-                </a>
-                <a href="https://music.mts.ru/album/43425758" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-solid fa-headphones icon" style="color: #e30613;"></i>
-                    <span>Kion Music</span>
-                </a>
-                <a href="https://www.deezer.com/album/1047727962" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-solid fa-compact-disc icon" style="color: #a29bfe;"></i>
-                    <span>Deezer</span>
-                </a>
-                <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
-                    <i class="fa-brands fa-itunes-note icon" style="color: #ea4335;"></i>
-                    <span>iTunes</span>
+                
+                <div class="section-title">Официальный аккаунт</div>
+                <a href="https://instagram.com/gafur.lv" target="_blank" class="link-btn official-btn">
+                    <i class="fa-solid fa-circle-check icon" style="color: #fff;"></i>
+                    <span>@gafur.lv</span>
                 </a>
 
-                <!-- Цитата -->
-                <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
-
-                <!-- Видеоплеер -->
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- Анонс концерта в Самарканде -->
+                <div class="section-title">Ближайшее событие</div>
+                <div class="concert-card">
+                    <div class="concert-title"><i class="fa-solid fa-calendar-days"></i> Концерт в Самарканде</div>
+                    <div class="concert-info"><strong>17 октября</strong> • Family Park<br>New Art Show</div>
+                    <a href="https://iticket.uz/events/concerts/new-art-show-gsamarkand/54270" target="_blank" class="concert-btn">
+                        <i class="fa-solid fa-ticket"></i> Купить билеты
+                    </a>
                 </div>
 
-                <!-- Счетчик просмотров -->
-                <div class="stats-box">
-                    <i class="fa-solid fa-fire"></i>
-                    <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
+                <!-- Главная кнопка релиза ARMON -->
+                <div class="section-title">Последний релиз</div>
+                <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
+                    <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
+                    <span>ARMON (Слушать)</span>
+                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </div>
+                
+                <div class="platforms-dropdown" id="platformsDropdown">
+                    <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
+                        <span>Яндекс Музыка</span>
+                    </a>
+                    <a href="https://open.spotify.com/album/3TeltNzFM08Ot5Y4QK5j5s" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
+                        <span>Spotify</span>
+                    </a>
+                    <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
+                        <span>Apple Music</span>
+                    </a>
+                    <a href="https://music.vk.com/link/eUk2b" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-brands fa-vk icon" style="color: #0077ff;"></i>
+                        <span>VK Музыка</span>
+                    </a>
+                    <a href="https://music.mts.ru/album/43425758" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-solid fa-headphones icon" style="color: #e30613;"></i>
+                        <span>Kion Music</span>
+                    </a>
+                    <a href="https://www.deezer.com/album/1047727962" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-solid fa-compact-disc icon" style="color: #a29bfe;"></i>
+                        <span>Deezer</span>
+                    </a>
+                    <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
+                        <i class="fa-brands fa-itunes-note icon" style="color: #ea4335;"></i>
+                        <span>iTunes</span>
+                    </a>
+
+                    <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
+
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="stats-box">
+                        <i class="fa-solid fa-fire"></i>
+                        <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
+                    </div>
+                </div>
+
+                <div class="section-title">Контакты</div>
+                <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
+                    <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
+                    <span>Booking: +7 912 227 87 47</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- РАЗДЕЛ 2: СООБЩЕНИЕ ГАФУРУ -->
+        <div class="page-section" id="page-message">
+            <div class="section-title">Написать артисту</div>
+            <div class="form-card">
+                <div class="form-group">
+                    <label>Ваш Instagram аккаунт</label>
+                    <input type="text" id="igAccount" class="form-input" placeholder="@username">
+                </div>
+                <div class="form-group">
+                    <label>Ваше сообщение</label>
+                    <textarea id="msgText" class="form-textarea" placeholder="Введите текст сообщения..."></textarea>
+                </div>
+                <button class="submit-btn" onclick="sendMessage()">Отправить сообщение</button>
+            </div>
+            <a class="link-btn" style="margin-top: 10px; justify-content: center;" onclick="switchPage('home')">
+                <i class="fa-solid fa-arrow-left"></i> На главную
+            </a>
+        </div>
+
+        <!-- РАЗДЕЛ 3: АДМИН-ПАНЕЛЬ -->
+        <div class="page-section" id="page-admin">
+            <div class="section-title">Вход в админ-панель</div>
+            
+            <!-- Форма авторизации -->
+            <div class="form-card" id="loginCard">
+                <div class="form-group">
+                    <label>Логин</label>
+                    <input type="text" id="adminUser" class="form-input" placeholder="Введите логин">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="adminPass" class="form-input" placeholder="Введите пароль">
+                </div>
+                <button class="submit-btn" onclick="checkAuth()">Войти</button>
+            </div>
+
+            <!-- Список сообщений (скрыт до входа) -->
+            <div id="adminPanelContent" style="display: none; flex-direction: column; gap: 12px; width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 13px; color: #00e5ff; font-weight: 700;">Вход выполнен успешно</span>
+                    <button onclick="logoutAdmin()" class="del-msg-btn" style="padding: 6px 12px;">Выйти</button>
+                </div>
+                <div id="messagesContainer" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                    <!-- Сюда динамически подгружаются сообщения -->
                 </div>
             </div>
 
-            <!-- Контакты -->
-            <div class="section-title">Контакты</div>
-            <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
-                <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
-                <span>Booking: +7 912 227 87 47</span>
+            <a class="link-btn" style="margin-top: 10px; justify-content: center;" onclick="switchPage('home')">
+                <i class="fa-solid fa-arrow-left"></i> На главную
             </a>
         </div>
 
@@ -411,11 +679,130 @@
     </div>
 
     <script>
+        // Управление боковым меню
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        // Переключение между разделами
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if(sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Выпадающий список платформ
         function togglePlatforms() {
             const dropdown = document.getElementById('platformsDropdown');
             const toggleBtn = document.getElementById('armonToggle');
             dropdown.classList.toggle('show');
             toggleBtn.classList.toggle('active');
+        }
+
+        // Отправка сообщения Гафуру
+        function sendMessage() {
+            const ig = document.getElementById('igAccount').value.trim();
+            const text = document.getElementById('msgText').value.trim();
+
+            if(!ig || !text) {
+                alert('Пожалуйста, заполните все поля!');
+                return;
+            }
+
+            const messages = JSON.parse(localStorage.getItem('gafur_messages') || '[]');
+            const newMsg = {
+                id: Date.now(),
+                ig: ig,
+                text: text,
+                time: new Date().toLocaleString()
+            };
+
+            messages.unshift(newMsg);
+            localStorage.setItem('gafur_messages', JSON.stringify(messages));
+
+            alert('Сообщение успешно отправлено!');
+            document.getElementById('igAccount').value = '';
+            document.getElementById('msgText').value = '';
+            switchPage('home');
+        }
+
+        // Проверка авторизации админа
+        function checkAuth() {
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+
+            if(user === 'gafurdemo' && pass === 'gfd1324') {
+                localStorage.setItem('gafur_admin_logged', 'true');
+                loadAdminMessages();
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'flex';
+            } else {
+                alert('Неверный логин или пароль!');
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('gafur_admin_logged');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+            document.getElementById('loginCard').style.display = 'flex';
+            document.getElementById('adminPanelContent').style.display = 'none';
+        }
+
+        // Загрузка сообщений в админку
+        function loadAdminMessages() {
+            const container = document.getElementById('messagesContainer');
+            const messages = JSON.parse(localStorage.getItem('gafur_messages') || '[]');
+            
+            if(messages.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #636e72; font-size: 13px; padding: 20px;">Нет новых сообщений</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            messages.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = 'admin-msg-card';
+                card.innerHTML = `
+                    <div class="msg-header">
+                        <span><i class="fa-brands fa-instagram"></i> ${escapeHtml(msg.ig)}</span>
+                        <span class="msg-time">${msg.time}</span>
+                    </div>
+                    <div class="msg-text">${escapeHtml(msg.text)}</div>
+                    <button class="del-msg-btn" onclick="deleteMessage(${msg.id})">Удалить</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function deleteMessage(id) {
+            let messages = JSON.parse(localStorage.getItem('gafur_messages') || '[]');
+            messages = messages.filter(m => m.id !== id);
+            localStorage.setItem('gafur_messages', JSON.stringify(messages));
+            loadAdminMessages();
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Авто-вход если уже авторизованы в этой сессии браузера
+        window.onload = function() {
+            if(localStorage.getItem('gafur_admin_logged') === 'true') {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'flex';
+                loadAdminMessages();
+            }
         }
 
         function sharePage() {
