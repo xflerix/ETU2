@@ -128,7 +128,6 @@
             transform: scale(1.08);
         }
 
-        /* Шапка профиля с кликабельным счетчиком любви */
         .profile-header {
             text-align: center;
             margin-bottom: 25px;
@@ -149,30 +148,8 @@
             color: var(--text-muted);
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            margin-bottom: 12px;
         }
 
-        /* Интерактивная кнопка любви фанатов */
-        .fan-love-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-        }
-        .fan-love-badge:hover { transform: scale(1.05); border-color: var(--accent-cyan); }
-        .fan-love-badge i { color: #ff4757; transition: transform 0.2s; }
-        .fan-love-badge:active i { transform: scale(1.4); }
-
-        /* Боковое меню */
         .sidebar {
             position: fixed;
             top: 0; left: -100%;
@@ -237,7 +214,6 @@
             letter-spacing: 1px;
         }
 
-        /* Блок настроек в меню */
         .settings-block {
             margin-top: 20px;
             padding-top: 20px;
@@ -500,12 +476,6 @@
         <div class="profile-header">
             <h1 class="profile-title">Gafur Demo</h1>
             <p class="description" data-tr="profile_desc">Самый крупный и официальный фан аккаунт</p>
-            
-            <!-- Интерактивный счетчик любви фанатов -->
-            <div class="fan-love-badge" onclick="incrementLove()" title="Нажми, чтобы поддержать!">
-                <i class="fa-solid fa-heart" id="heartIcon"></i>
-                <span><strong id="loveCounter">1420</strong> <span data-tr="love_text">фанатов с нами</span></span>
-            </div>
         </div>
 
         <!-- РАЗДЕЛ 1: ГЛАВНАЯ -->
@@ -544,7 +514,7 @@
                 <div class="section-title" data-tr="sec_release">Последний релиз</div>
                 <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
                     <i class="fa-solid fa-compact-disc icon" style="color: var(--accent-cyan);"></i>
-                    <span>ARMON (<span data-tr="listen_btn">Слушать</span>)</span>
+                    <span>ARMON</span>
                     <i class="fa-solid fa-chevron-down arrow-icon"></i>
                 </div>
                 
@@ -653,7 +623,6 @@
     </div>
 
     <script>
-        // Словарь переводов (RU, UZ, EN)
         const translations = {
             ru: {
                 menu_title: "МЕНЮ САЙТА",
@@ -665,13 +634,11 @@
                 theme_light: "Светлая",
                 theme_neon: "Неон",
                 profile_desc: "Самый крупный и официальный фан аккаунт",
-                love_text: "фанатов с нами",
                 sec_official: "Официальный аккаунт",
                 sec_event: "Ближайшее событие",
                 concert_title: "Концерт в Самарканде",
                 concert_btn: "Купить билеты",
                 sec_release: "Последний релиз",
-                listen_btn: "Слушать",
                 stat_clip: "Клип Armon на YouTube",
                 stat_views: "просмотров",
                 sec_contacts: "Контакты",
@@ -681,8 +648,7 @@
                 btn_send: "Отправить сообщение",
                 back_home: "На главную",
                 toast_copied: "Ссылка скопирована!",
-                toast_sent: "Сообщение отправлено!",
-                toast_love: "Спасибо за любовь к творчеству! ❤️"
+                toast_sent: "Сообщение отправлено!"
             },
             uz: {
                 menu_title: "SAYT MENYUSI",
@@ -694,14 +660,11 @@
                 theme_light: "Kunduzgi",
                 theme_neon: "Neon",
                 profile_desc: "Eng yirik va rasmiy fan akkaunt",
-                love_text: "muxlislar biz bilan",
                 sec_official: "Rasmiy sahifa",
                 sec_event: "Yaqin tadbir",
                 concert_title: "Samarqanddagi konsert",
-                concert_info: "Chipta sotib olish",
                 concert_btn: "Chipta olish",
                 sec_release: "So'nggi trek",
-                listen_btn: "Tinglash",
                 stat_clip: "Armon klipi Youtubeda",
                 stat_views: "marta ko'rilgan",
                 sec_contacts: "Aloqa",
@@ -711,8 +674,7 @@
                 btn_send: "Xabarni yuborish",
                 back_home: "Bosh sahifaga",
                 toast_copied: "Havola nusxalandi!",
-                toast_sent: "Xabar yuborildi!",
-                toast_love: "Muxlislik uchun rahmat! ❤️"
+                toast_sent: "Xabar yuborildi!"
             },
             en: {
                 menu_title: "SITE MENU",
@@ -724,13 +686,11 @@
                 theme_light: "Light",
                 theme_neon: "Neon",
                 profile_desc: "The largest & official fan page",
-                love_text: "fans with us",
                 sec_official: "Official Account",
                 sec_event: "Upcoming Event",
                 concert_title: "Concert in Samarkand",
                 concert_btn: "Buy Tickets",
                 sec_release: "Latest Release",
-                listen_btn: "Listen",
                 stat_clip: "Armon music video on YouTube",
                 stat_views: "views",
                 sec_contacts: "Contacts",
@@ -740,12 +700,10 @@
                 btn_send: "Send message",
                 back_home: "Back to Home",
                 toast_copied: "Link copied!",
-                toast_sent: "Message sent!",
-                toast_love: "Thanks for your support! ❤️"
+                toast_sent: "Message sent!"
             }
         };
 
-        // Логика смены языка
         function setLanguage(lang) {
             document.querySelectorAll('.settings-row button[id^="lang-"]').forEach(b => b.classList.remove('active'));
             document.getElementById('lang-' + lang).classList.add('active');
@@ -761,7 +719,6 @@
             });
         }
 
-        // Логика смены темы
         function setTheme(theme) {
             document.querySelectorAll('.settings-row button[id^="theme-"]').forEach(b => b.classList.remove('active'));
             document.getElementById('theme-' + theme).classList.add('active');
@@ -770,7 +727,6 @@
             localStorage.setItem('gafur_theme', theme);
         }
 
-        // Инициализация языка и темы при загрузке
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('gafur_lang') || 'ru';
             setLanguage(savedLang);
@@ -778,25 +734,12 @@
             const savedTheme = localStorage.getItem('gafur_theme') || 'dark';
             setTheme(savedTheme);
 
-            // Загрузка счетчика любви
-            let loveCount = localStorage.getItem('gafur_love') || 1420;
-            document.getElementById('loveCounter').innerText = loveCount;
-
             if(localStorage.getItem('gafur_admin_logged') === 'true') {
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('adminPanelContent').style.display = 'flex';
                 loadAdminMessages();
             }
         });
-
-        // Клик по счетчику любви фанатов
-        function incrementLove() {
-            let loveCount = parseInt(localStorage.getItem('gafur_love') || 1420) + 1;
-            localStorage.setItem('gafur_love', loveCount);
-            document.getElementById('loveCounter').innerText = loveCount;
-            const lang = localStorage.getItem('gafur_lang') || 'ru';
-            showToast(translations[lang].toast_love);
-        }
 
         let copyrightClicks = 0;
         let clickTimer = null;
