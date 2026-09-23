@@ -152,25 +152,14 @@
         }
         .official-btn:hover {
             background: linear-gradient(135deg, #7a22db 0%, #3585fc 100%);
-            box-shadow: 0 6px 25px rgba(37, 117, 252, 0.5);
+            box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
         }
 
-        .armon-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(0, 229, 255, 0.3);
+        .platform-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.12);
         }
 
-        .live-badge {
-            background: #00e5ff;
-            color: #000;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-        }
-
-        /* Цитата из трека под релизом */
         .quote {
             font-size: 12px;
             font-style: italic;
@@ -182,7 +171,6 @@
             width: 100%;
         }
 
-        /* Видеоплеер после релиза */
         .video-container {
             margin-top: 20px;
             width: 100%;
@@ -199,7 +187,6 @@
             display: block;
         }
 
-        /* Счетчик просмотров после видео */
         .stats-box {
             display: flex;
             align-items: center;
@@ -257,22 +244,35 @@
                 <span>@gafur.lv</span>
             </a>
 
-            <div class="section-title">Новый релиз</div>
-            <a href="https://band.link/gafur_armon" target="_blank" class="link-btn armon-btn">
-                <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
-                <span>ARMON</span>
-                <div class="live-badge">OUT NOW</div>
+            <!-- Последний релиз с отдельными платформами -->
+            <div class="section-title">Последний релиз: ARMON</div>
+            
+            <a href="https://band.link/gafur_armon" target="_blank" class="link-btn platform-btn">
+                <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
+                <span>Apple Music</span>
+            </a>
+            <a href="https://band.link/gafur_armon" target="_blank" class="link-btn platform-btn">
+                <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
+                <span>Spotify</span>
+            </a>
+            <a href="https://band.link/gafur_armon" target="_blank" class="link-btn platform-btn">
+                <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
+                <span>Яндекс Музыка</span>
+            </a>
+            <a href="https://band.link/gafur_armon" target="_blank" class="link-btn platform-btn">
+                <i class="fa-brands fa-vk icon" style="color: #0077ff;"></i>
+                <span>VK Музыка</span>
             </a>
             
             <!-- Цитата под релизом -->
             <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
 
-            <!-- Видеоплеер после релиза -->
+            <!-- Видеоплеер -->
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
 
-            <!-- Счетчик просмотров после видео -->
+            <!-- Счетчик просмотров -->
             <div class="stats-box">
                 <i class="fa-solid fa-fire"></i>
                 <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
