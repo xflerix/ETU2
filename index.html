@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gafur Demo | Official Fanpage</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root {
+        /* Темы оформления */
+        :root[data-theme="dark"] {
             --bg-color: #030305;
             --card-bg: rgba(255, 255, 255, 0.035);
             --card-border: rgba(255, 255, 255, 0.08);
@@ -17,6 +17,31 @@
             --accent-purple: #a29bfe;
             --text-main: #ffffff;
             --text-muted: #8c92a4;
+            --sidebar-bg: rgba(8, 8, 14, 0.97);
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f2f4f8;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --card-hover: rgba(255, 255, 255, 1);
+            --accent-cyan: #0077ff;
+            --accent-purple: #6c5ce7;
+            --text-main: #1e272e;
+            --text-muted: #57606f;
+            --sidebar-bg: rgba(255, 255, 255, 0.96);
+        }
+
+        :root[data-theme="neon"] {
+            --bg-color: #0b0214;
+            --card-bg: rgba(155, 89, 182, 0.05);
+            --card-border: rgba(155, 89, 182, 0.2);
+            --card-hover: rgba(155, 89, 182, 0.12);
+            --accent-cyan: #ff007f;
+            --accent-purple: #9b59b6;
+            --text-main: #ffffff;
+            --text-muted: #d8b4fe;
+            --sidebar-bg: rgba(18, 5, 28, 0.98);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,31 +54,11 @@
             min-height: 100vh;
             padding: 40px 20px;
             background-image: 
-                radial-gradient(circle at 15% 10%, rgba(106, 17, 203, 0.18) 0%, transparent 50%),
-                radial-gradient(circle at 85% 90%, rgba(0, 242, 254, 0.12) 0%, transparent 50%);
+                radial-gradient(circle at 15% 10%, rgba(106, 17, 203, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 90%, rgba(0, 242, 254, 0.1) 0%, transparent 50%);
             background-attachment: fixed;
             overflow-x: hidden;
-            position: relative;
-        }
-
-        .floating-notes {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .note {
-            position: absolute;
-            color: rgba(0, 242, 254, 0.15);
-            font-size: 20px;
-            animation: floatUp 8s infinite linear;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.6; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            transition: background 0.4s ease, color 0.4s ease;
         }
 
         @keyframes fadeIn {
@@ -68,7 +73,6 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            z-index: 1;
             animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
@@ -101,7 +105,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .icon-btn {
@@ -124,33 +128,10 @@
             transform: scale(1.08);
         }
 
-        .vibes-player {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            padding: 8px 16px;
-            border-radius: 30px;
-            backdrop-filter: blur(12px);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .vibes-player:hover { border-color: var(--accent-cyan); }
-        .vibes-icon {
-            width: 28px; height: 28px;
-            background: rgba(0, 242, 254, 0.15);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--accent-cyan);
-            font-size: 11px;
-        }
-        .vibes-text { font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
-
+        /* Шапка профиля с кликабельным счетчиком любви */
         .profile-header {
             text-align: center;
             margin-bottom: 25px;
-            cursor: pointer;
         }
         .profile-title {
             font-size: 28px;
@@ -158,7 +139,7 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff 30%, var(--accent-purple) 100%);
+            background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -168,14 +149,36 @@
             color: var(--text-muted);
             letter-spacing: 1.5px;
             text-transform: uppercase;
+            margin-bottom: 12px;
         }
 
+        /* Интерактивная кнопка любви фанатов */
+        .fan-love-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+        .fan-love-badge:hover { transform: scale(1.05); border-color: var(--accent-cyan); }
+        .fan-love-badge i { color: #ff4757; transition: transform 0.2s; }
+        .fan-love-badge:active i { transform: scale(1.4); }
+
+        /* Боковое меню */
         .sidebar {
             position: fixed;
             top: 0; left: -100%;
-            width: 300px;
+            width: 310px;
             height: 100%;
-            background: rgba(8, 8, 14, 0.97);
+            background: var(--sidebar-bg);
             backdrop-filter: blur(25px);
             border-right: 1px solid var(--card-border);
             z-index: 100;
@@ -183,13 +186,13 @@
             display: flex;
             flex-direction: column;
             padding: 30px 24px;
-            box-shadow: 25px 0 60px rgba(0,0,0,0.7);
+            box-shadow: 25px 0 60px rgba(0,0,0,0.5);
         }
         .sidebar.open { left: 0; }
         .sidebar-header {
             font-size: 15px;
             font-weight: 800;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             letter-spacing: 1.5px;
             color: var(--accent-cyan);
             display: flex;
@@ -233,22 +236,53 @@
             border-radius: 6px;
             letter-spacing: 1px;
         }
-        .game-badge {
-            background: rgba(0, 242, 254, 0.15);
-            border: 1px solid rgba(0, 242, 254, 0.4);
-            color: var(--accent-cyan);
-            font-size: 9px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
-            letter-spacing: 1px;
+
+        /* Блок настроек в меню */
+        .settings-block {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .settings-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+        .settings-row {
+            display: flex;
+            gap: 8px;
+        }
+        .settings-btn {
+            flex: 1;
+            padding: 10px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .settings-btn:hover { border-color: var(--accent-cyan); }
+        .settings-btn.active {
+            background: var(--accent-cyan);
+            color: #030305;
+            border-color: var(--accent-cyan);
+            font-weight: 700;
         }
 
         .overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
             z-index: 90;
             display: none;
@@ -280,7 +314,7 @@
             font-weight: 600;
             backdrop-filter: blur(12px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             cursor: pointer;
         }
         .link-btn i.icon {
@@ -291,7 +325,7 @@
             background: var(--card-hover);
             border-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
         }
 
         .section-title {
@@ -308,6 +342,7 @@
         .official-btn {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             border: none;
+            color: #fff !important;
             box-shadow: 0 4px 25px rgba(37, 117, 252, 0.35);
         }
         .official-btn:hover {
@@ -334,21 +369,6 @@
         }
         .armon-main-btn.active .arrow-icon { transform: rotate(180deg); }
 
-        .equalizer {
-            display: flex; align-items: flex-end; gap: 3px; height: 16px; width: 18px; margin-right: 15px;
-        }
-        .equalizer span {
-            display: block; width: 3px; background: var(--accent-cyan); border-radius: 3px; animation: eqAnim 1.2s infinite ease-in-out;
-        }
-        .equalizer span:nth-child(1) { animation-delay: 0.1s; height: 60%; }
-        .equalizer span:nth-child(2) { animation-delay: 0.4s; height: 100%; }
-        .equalizer span:nth-child(3) { animation-delay: 0.2s; height: 40%; }
-
-        @keyframes eqAnim {
-            0%, 100% { transform: scaleY(0.4); }
-            50% { transform: scaleY(1); }
-        }
-
         .platforms-dropdown {
             max-height: 0; overflow: hidden;
             transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
@@ -357,7 +377,7 @@
         .platforms-dropdown.show { max-height: 1200px; opacity: 1; margin-top: 14px; }
 
         .platform-btn {
-            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 20px; padding: 14px 20px; font-size: 13px;
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 14px 20px; font-size: 13px;
         }
 
         .concert-card {
@@ -367,7 +387,7 @@
             box-shadow: 0 10px 30px rgba(238, 82, 83, 0.12);
         }
         .concert-title { font-size: 13px; font-weight: 700; color: #ff6b6b; text-transform: uppercase; letter-spacing: 1px; }
-        .concert-info { font-size: 13px; color: #dfe6e9; line-height: 1.4; }
+        .concert-info { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
         .concert-btn {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%); border: none; border-radius: 20px; padding: 12px 20px;
             color: #fff; font-weight: 700; font-size: 13px; text-decoration: none; width: 100%;
@@ -381,12 +401,12 @@
         }
 
         .video-container {
-            margin-top: 10px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.6); background: #000; border: 1px solid var(--card-border);
+            margin-top: 10px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: #000; border: 1px solid var(--card-border);
         }
         .video-container iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
 
         .stats-box {
-            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--card-border); border-radius: 16px; font-size: 12px; color: var(--text-muted); margin-top: 5px;
+            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; font-size: 12px; color: var(--text-muted); margin-top: 5px;
         }
         .stats-box i { color: #ff4757; }
 
@@ -399,7 +419,7 @@
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
         .form-input, .form-textarea {
-            width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--card-border); border-radius: 16px; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s;
+            width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--card-border); border-radius: 16px; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s;
         }
         .form-input:focus, .form-textarea:focus { border-color: var(--accent-cyan); }
         .form-textarea { resize: none; height: 130px; }
@@ -408,22 +428,12 @@
         }
         .submit-btn:hover { transform: translateY(-2px); }
 
-        /* Стили для викторины */
-        .quiz-question { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 10px; text-align: center; }
-        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
-        .quiz-option-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px 18px; color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s; text-align: left;
-        }
-        .quiz-option-btn:hover { background: rgba(0, 242, 254, 0.1); border-color: var(--accent-cyan); }
-        .quiz-option-btn.correct { background: rgba(46, 213, 115, 0.2); border-color: #2ed573; color: #2ed573; }
-        .quiz-option-btn.wrong { background: rgba(255, 71, 87, 0.2); border-color: #ff4757; color: #ff4757; }
-
         .admin-msg-card {
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 10px;
         }
         .msg-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--accent-cyan); font-weight: 700; }
         .msg-time { font-size: 10px; color: var(--text-muted); font-weight: 400; }
-        .msg-text { font-size: 13px; color: #dfe6e9; word-break: break-word; line-height: 1.5; }
+        .msg-text { font-size: 13px; color: var(--text-main); word-break: break-word; line-height: 1.5; }
         .del-msg-btn {
             background: rgba(255, 71, 87, 0.15); border: 1px solid rgba(255, 71, 87, 0.3); color: #ff4757; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; align-self: flex-end; transition: background 0.3s;
         }
@@ -436,90 +446,105 @@
     </style>
 </head>
 <body>
-    <div class="floating-notes" id="floatingNotes"></div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="toast" id="toast">Эффект активирован!</div>
+    <div class="toast" id="toast" data-tr="toast_copied">Ссылка скопирована!</div>
 
-    <!-- Боковое меню -->
+    <!-- Боковое меню с настройками -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span>МЕНЮ САЙТА</span>
-            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        <div>
+            <div class="sidebar-header">
+                <span data-tr="menu_title">МЕНЮ САЙТА</span>
+                <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="sidebar-links">
+                <a class="sidebar-item" onclick="switchPage('home')">
+                    <span><i class="fa-solid fa-house" style="color: var(--accent-cyan); margin-right: 12px;"></i> <span data-tr="nav_home">Главная</span></span>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: var(--text-muted);"></i>
+                </a>
+                <a class="sidebar-item" onclick="switchPage('message')">
+                    <span><i class="fa-solid fa-paper-plane" style="color: #ff7675; margin-right: 12px;"></i> <span data-tr="nav_msg">Сообщение Гафуру</span></span>
+                    <span class="beta-badge">BETA</span>
+                </a>
+            </div>
         </div>
-        <div class="sidebar-links">
-            <a class="sidebar-item" onclick="switchPage('home')">
-                <span><i class="fa-solid fa-house" style="color: var(--accent-cyan); margin-right: 12px;"></i> Главная</span>
-                <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: var(--text-muted);"></i>
-            </a>
-            <a class="sidebar-item" onclick="switchPage('message')">
-                <span><i class="fa-solid fa-paper-plane" style="color: #ff7675; margin-right: 12px;"></i> Сообщение Гафуру</span>
-                <span class="beta-badge">BETA</span>
-            </a>
-            <a class="sidebar-item" onclick="switchPage('quiz')">
-                <span><i class="fa-solid fa-gamepad" style="color: #ffeaa7; margin-right: 12px;"></i> Викторина</span>
-                <span class="game-badge">IGRAM</span>
-            </a>
+
+        <!-- БЛОК НАСТРОЕК -->
+        <div class="settings-block">
+            <div class="settings-label" data-tr="set_lang">Язык / Language</div>
+            <div class="settings-row">
+                <button class="settings-btn active" id="lang-ru" onclick="setLanguage('ru')">РУС</button>
+                <button class="settings-btn" id="lang-uz" onclick="setLanguage('uz')">OʻZB</button>
+                <button class="settings-btn" id="lang-en" onclick="setLanguage('en')">ENG</button>
+            </div>
+
+            <div class="settings-label" data-tr="set_theme">Тема оформления</div>
+            <div class="settings-row">
+                <button class="settings-btn active" id="theme-dark" onclick="setTheme('dark')" data-tr="theme_dark">Тёмная</button>
+                <button class="settings-btn" id="theme-light" onclick="setTheme('light')" data-tr="theme_light">Светлая</button>
+                <button class="settings-btn" id="theme-neon" onclick="setTheme('neon')" data-tr="theme_neon">Неон</button>
+            </div>
         </div>
     </div>
 
     <div class="container">
+        <!-- Верхняя панель -->
         <div class="top-bar">
             <button class="icon-btn" onclick="toggleMenu()" title="Меню">
                 <i class="fa-solid fa-bars"></i>
             </button>
-            
-            <div class="vibes-player" onclick="toggleVibes()">
-                <div class="vibes-icon"><i class="fa-solid fa-music" id="vibesIconState"></i></div>
-                <span class="vibes-text" id="vibesText">LO-FI VIBE</span>
-            </div>
-
             <button class="icon-btn" onclick="sharePage()" title="Поделиться">
                 <i class="fa-solid fa-share-nodes"></i>
             </button>
         </div>
 
-        <div class="profile-header" onclick="triggerConfetti()">
+        <div class="profile-header">
             <h1 class="profile-title">Gafur Demo</h1>
-            <p class="description">Самый крупный и официальный фан аккаунт</p>
+            <p class="description" data-tr="profile_desc">Самый крупный и официальный фан аккаунт</p>
+            
+            <!-- Интерактивный счетчик любви фанатов -->
+            <div class="fan-love-badge" onclick="incrementLove()" title="Нажми, чтобы поддержать!">
+                <i class="fa-solid fa-heart" id="heartIcon"></i>
+                <span><strong id="loveCounter">1420</strong> <span data-tr="love_text">фанатов с нами</span></span>
+            </div>
         </div>
 
         <!-- РАЗДЕЛ 1: ГЛАВНАЯ -->
         <div class="page-section active" id="page-home">
             <div class="links-wrapper">
-                <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn" onclick="triggerConfetti()">
+                <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn">
                     <i class="fa-brands fa-instagram icon" style="color: #e1306c;"></i>
                     <span>Instagram</span>
                 </a>
-                <a href="https://youtube.com/@gafurdemo" target="_blank" class="link-btn" onclick="triggerConfetti()">
+                <a href="https://youtube.com/@gafurdemo" target="_blank" class="link-btn">
                     <i class="fa-brands fa-youtube icon" style="color: #ff0000;"></i>
                     <span>YouTube</span>
                 </a>
-                <a href="https://tiktok.com/@gafur.demo" target="_blank" class="link-btn" onclick="triggerConfetti()">
+                <a href="https://tiktok.com/@gafur.demo" target="_blank" class="link-btn">
                     <i class="fa-brands fa-tiktok icon" style="color: #00f2fe;"></i>
                     <span>TikTok</span>
                 </a>
                 
-                <div class="section-title">Официальный аккаунт</div>
-                <a href="https://instagram.com/gafur.lv" target="_blank" class="link-btn official-btn" onclick="triggerConfetti()">
+                <div class="section-title" data-tr="sec_official">Официальный аккаунт</div>
+                <a href="https://instagram.com/gafur.lv" target="_blank" class="link-btn official-btn">
                     <i class="fa-solid fa-circle-check icon" style="color: #fff;"></i>
                     <span>@gafur.lv</span>
                 </a>
 
-                <div class="section-title">Ближайшее событие</div>
+                <!-- Концерт в Самарканде -->
+                <div class="section-title" data-tr="sec_event">Ближайшее событие</div>
                 <div class="concert-card">
-                    <div class="concert-title"><i class="fa-solid fa-calendar-days"></i> Концерт в Самарканде</div>
+                    <div class="concert-title"><i class="fa-solid fa-calendar-days"></i> <span data-tr="concert_title">Концерт в Самарканде</span></div>
                     <div class="concert-info"><strong>17 октября</strong> • Family Park<br>New Art Show</div>
-                    <a href="https://iticket.uz/events/concerts/new-art-show-gsamarkand/54270" target="_blank" class="concert-btn" onclick="triggerConfetti()">
-                        <i class="fa-solid fa-ticket"></i> Купить билеты
+                    <a href="https://iticket.uz/events/concerts/new-art-show-gsamarkand/54270" target="_blank" class="concert-btn">
+                        <i class="fa-solid fa-ticket"></i> <span data-tr="concert_btn">Купить билеты</span>
                     </a>
                 </div>
 
-                <div class="section-title">Последний релиз</div>
+                <!-- Последний релиз -->
+                <div class="section-title" data-tr="sec_release">Последний релиз</div>
                 <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
-                    <div class="equalizer">
-                        <span></span><span></span><span></span>
-                    </div>
-                    <span>ARMON (Слушать)</span>
+                    <i class="fa-solid fa-compact-disc icon" style="color: var(--accent-cyan);"></i>
+                    <span>ARMON (<span data-tr="listen_btn">Слушать</span>)</span>
                     <i class="fa-solid fa-chevron-down arrow-icon"></i>
                 </div>
                 
@@ -561,11 +586,11 @@
 
                     <div class="stats-box">
                         <i class="fa-solid fa-fire"></i>
-                        <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
+                        <span><span data-tr="stat_clip">Клип Armon на YouTube</span>: <strong>3.1M+ <span data-tr="stat_views">просмотров</span></strong></span>
                     </div>
                 </div>
 
-                <div class="section-title">Контакты</div>
+                <div class="section-title" data-tr="sec_contacts">Контакты</div>
                 <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
                     <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
                     <span>Booking: +7 912 227 87 47</span>
@@ -575,37 +600,24 @@
 
         <!-- РАЗДЕЛ 2: СООБЩЕНИЕ ГАФУРУ -->
         <div class="page-section" id="page-message">
-            <div class="section-title">Написать артисту</div>
+            <div class="section-title" data-tr="msg_to_artist">Написать артисту</div>
             <div class="form-card">
                 <div class="form-group">
-                    <label>Ваш Instagram аккаунт</label>
+                    <label data-tr="label_ig">Ваш Instagram аккаунт</label>
                     <input type="text" id="igAccount" class="form-input" placeholder="@username">
                 </div>
                 <div class="form-group">
-                    <label>Ваше сообщение</label>
+                    <label data-tr="label_text">Ваше сообщение</label>
                     <textarea id="msgText" class="form-textarea" placeholder="Введите текст сообщения..."></textarea>
                 </div>
-                <button class="submit-btn" onclick="sendMessage()">Отправить сообщение</button>
+                <button class="submit-btn" onclick="sendMessage()" data-tr="btn_send">Отправить сообщение</button>
             </div>
             <a class="link-btn" style="margin-top: 5px; justify-content: center;" onclick="switchPage('home')">
-                <i class="fa-solid fa-arrow-left"></i> На главную
+                <i class="fa-solid fa-arrow-left"></i> <span data-tr="back_home">На главную</span>
             </a>
         </div>
 
-        <!-- РАЗДЕЛ 3: ВИКТОРИНА ДЛЯ ФАНАТОВ -->
-        <div class="page-section" id="page-quiz">
-            <div class="section-title">Угадай трек / Викторина</div>
-            <div class="form-card" id="quizContainer">
-                <div id="quizContent">
-                    <!-- Динамический контент викторины -->
-                </div>
-            </div>
-            <a class="link-btn" style="margin-top: 5px; justify-content: center;" onclick="switchPage('home')">
-                <i class="fa-solid fa-arrow-left"></i> На главную
-            </a>
-        </div>
-
-        <!-- РАЗДЕЛ 4: СЕКРЕТНАЯ АДМИН-ПАНЕЛЬ -->
+        <!-- РАЗДЕЛ 3: СЕКРЕТНАЯ АДМИН-ПАНЕЛЬ -->
         <div class="page-section" id="page-admin">
             <div class="section-title">Секретная админ-панель</div>
             
@@ -630,137 +642,160 @@
             </div>
 
             <a class="link-btn" style="margin-top: 5px; justify-content: center;" onclick="switchPage('home')">
-                <i class="fa-solid fa-arrow-left"></i> На главную
+                <i class="fa-solid fa-arrow-left"></i> <span data-tr="back_home">На главную</span>
             </a>
         </div>
 
+        <!-- Тройной клик на копирайт открывает админку -->
         <footer onclick="handleSecretClick()">
             © 2026 Gafur Demo
         </footer>
     </div>
 
-    <audio id="vibeAudio" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
-    </audio>
-
     <script>
-        // Логика викторины
-        const quizData = [
-            {
-                question: "Как переводится название последнего хита «ARMON»?",
-                options: ["Любовь", "Тоска / Сожаление", "Ночь", "Звезда"],
-                correct: 1
+        // Словарь переводов (RU, UZ, EN)
+        const translations = {
+            ru: {
+                menu_title: "МЕНЮ САЙТА",
+                nav_home: "Главная",
+                nav_msg: "Сообщение Гафуру",
+                set_lang: "Язык / Language",
+                set_theme: "Тема оформления",
+                theme_dark: "Тёмная",
+                theme_light: "Светлая",
+                theme_neon: "Неон",
+                profile_desc: "Самый крупный и официальный фан аккаунт",
+                love_text: "фанатов с нами",
+                sec_official: "Официальный аккаунт",
+                sec_event: "Ближайшее событие",
+                concert_title: "Концерт в Самарканде",
+                concert_btn: "Купить билеты",
+                sec_release: "Последний релиз",
+                listen_btn: "Слушать",
+                stat_clip: "Клип Armon на YouTube",
+                stat_views: "просмотров",
+                sec_contacts: "Контакты",
+                msg_to_artist: "Написать артисту",
+                label_ig: "Ваш Instagram аккаунт",
+                label_text: "Ваше сообщение",
+                btn_send: "Отправить сообщение",
+                back_home: "На главную",
+                toast_copied: "Ссылка скопирована!",
+                toast_sent: "Сообщение отправлено!",
+                toast_love: "Спасибо за любовь к творчеству! ❤️"
             },
-            {
-                question: "В каком городе пройдет концерт Гафура 17 октября?",
-                options: ["Ташкент", "Самарканд", "Бухара", "Москва"],
-                correct: 1
+            uz: {
+                menu_title: "SAYT MENYUSI",
+                nav_home: "Bosh sahifa",
+                nav_msg: "Gafurga xabar yuborish",
+                set_lang: "Til / Language",
+                set_theme: "Mavzu (Tema)",
+                theme_dark: "Tungi",
+                theme_light: "Kunduzgi",
+                theme_neon: "Neon",
+                profile_desc: "Eng yirik va rasmiy fan akkaunt",
+                love_text: "muxlislar biz bilan",
+                sec_official: "Rasmiy sahifa",
+                sec_event: "Yaqin tadbir",
+                concert_title: "Samarqanddagi konsert",
+                concert_info: "Chipta sotib olish",
+                concert_btn: "Chipta olish",
+                sec_release: "So'nggi trek",
+                listen_btn: "Tinglash",
+                stat_clip: "Armon klipi Youtubeda",
+                stat_views: "marta ko'rilgan",
+                sec_contacts: "Aloqa",
+                msg_to_artist: "Artistga yozish",
+                label_ig: "Sizning Instagram akkountingiz",
+                label_text: "Xabaringiz matni",
+                btn_send: "Xabarni yuborish",
+                back_home: "Bosh sahifaga",
+                toast_copied: "Havola nusxalandi!",
+                toast_sent: "Xabar yuborildi!",
+                toast_love: "Muxlislik uchun rahmat! ❤️"
             },
-            {
-                question: "Какой популярный альбом артиста вышел ранее?",
-                options: ["Kaleidoskop", "Planet G", "Alpha", "Sunset"],
-                correct: 0
+            en: {
+                menu_title: "SITE MENU",
+                nav_home: "Home",
+                nav_msg: "Message to Gafur",
+                set_lang: "Language",
+                set_theme: "Theme",
+                theme_dark: "Dark",
+                theme_light: "Light",
+                theme_neon: "Neon",
+                profile_desc: "The largest & official fan page",
+                love_text: "fans with us",
+                sec_official: "Official Account",
+                sec_event: "Upcoming Event",
+                concert_title: "Concert in Samarkand",
+                concert_btn: "Buy Tickets",
+                sec_release: "Latest Release",
+                listen_btn: "Listen",
+                stat_clip: "Armon music video on YouTube",
+                stat_views: "views",
+                sec_contacts: "Contacts",
+                msg_to_artist: "Write to Artist",
+                label_ig: "Your Instagram account",
+                label_text: "Your message",
+                btn_send: "Send message",
+                back_home: "Back to Home",
+                toast_copied: "Link copied!",
+                toast_sent: "Message sent!",
+                toast_love: "Thanks for your support! ❤️"
             }
-        ];
+        };
 
-        let currentQuestion = 0;
-        let score = 0;
-
-        function loadQuiz() {
-            const container = document.getElementById('quizContent');
-            if (currentQuestion >= quizData.length) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 20px;">
-                        <h3 style="color: var(--accent-cyan); margin-bottom: 10px;">Викторина завершена! 🎉</h3>
-                        <p style="font-size: 14px; margin-bottom: 20px;">Твой результат: <strong>${score} из ${quizData.length}</strong></p>
-                        <button class="submit-btn" onclick="restartQuiz()">Пройти заново</button>
-                    </div>
-                `;
-                triggerConfetti();
-                return;
-            }
-
-            const q = quizData[currentQuestion];
-            let html = `<div class="quiz-question">Вопрос ${currentQuestion + 1} из ${quizData.length}<br><br>${q.question}</div><div class="quiz-options">`;
-            q.options.forEach((opt, index) => {
-                html += `<button class="quiz-option-btn" onclick="selectAnswer(${index})">${opt}</button>`;
-            });
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        function selectAnswer(index) {
-            const q = quizData[currentQuestion];
-            const buttons = document.querySelectorAll('.quiz-option-btn');
+        // Логика смены языка
+        function setLanguage(lang) {
+            document.querySelectorAll('.settings-row button[id^="lang-"]').forEach(b => b.classList.remove('active'));
+            document.getElementById('lang-' + lang).classList.add('active');
             
-            if (index === q.correct) {
-                buttons[index].classList.add('correct');
-                score++;
-                showToast('Правильно! 🔥');
-            } else {
-                buttons[index].classList.add('wrong');
-                buttons[q.correct].classList.add('correct');
-                showToast('Неправильно!');
-            }
+            localStorage.setItem('gafur_lang', lang);
+            const tr = translations[lang];
 
-            setTimeout(() => {
-                currentQuestion++;
-                loadQuiz();
-            }, 1200);
-        }
-
-        function restartQuiz() {
-            currentQuestion = 0;
-            score = 0;
-            loadQuiz();
-        }
-
-        loadQuiz();
-
-        // Фоновые ноты
-        const notesContainer = document.getElementById('floatingNotes');
-        const symbols = ['🎵', '🎶', '✨', '💖', '🎧'];
-        for(let i=0; i<12; i++) {
-            const note = document.createElement('div');
-            note.className = 'note';
-            note.innerText = symbols[Math.floor(Math.random() * symbols.length)];
-            note.style.left = Math.random() * 100 + 'vw';
-            note.style.animationDuration = (6 + Math.random() * 6) + 's';
-            note.style.animationDelay = (Math.random() * 5) + 's';
-            notesContainer.appendChild(note);
-        }
-
-        function triggerConfetti() {
-            confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.7 },
-                colors: ['#00f2fe', '#a29bfe', '#ff7675', '#ffffff']
+            document.querySelectorAll('[data-tr]').forEach(el => {
+                const key = el.getAttribute('data-tr');
+                if (tr[key]) {
+                    el.innerText = tr[key];
+                }
             });
         }
 
-        let isPlayingVibes = false;
-        function toggleVibes() {
-            const audio = document.getElementById('vibeAudio');
-            const icon = document.getElementById('vibesIconState');
-            const text = document.getElementById('vibesText');
-            
-            if(isPlayingVibes) {
-                audio.pause();
-                icon.className = 'fa-solid fa-music';
-                text.innerText = 'LO-FI VIBE';
-                showToast('Музыка остановлена');
-                isPlayingVibes = false;
-            } else {
-                audio.play().then(() => {
-                    icon.className = 'fa-solid fa-volume-high';
-                    text.innerText = 'PLAYING...';
-                    showToast('Включен вайб-режим 🎧');
-                    isPlayingVibes = true;
-                }).catch(() => {
-                    showToast('Нажмите еще раз для запуска музыки');
-                });
+        // Логика смены темы
+        function setTheme(theme) {
+            document.querySelectorAll('.settings-row button[id^="theme-"]').forEach(b => b.classList.remove('active'));
+            document.getElementById('theme-' + theme).classList.add('active');
+
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('gafur_theme', theme);
+        }
+
+        // Инициализация языка и темы при загрузке
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('gafur_lang') || 'ru';
+            setLanguage(savedLang);
+
+            const savedTheme = localStorage.getItem('gafur_theme') || 'dark';
+            setTheme(savedTheme);
+
+            // Загрузка счетчика любви
+            let loveCount = localStorage.getItem('gafur_love') || 1420;
+            document.getElementById('loveCounter').innerText = loveCount;
+
+            if(localStorage.getItem('gafur_admin_logged') === 'true') {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('adminPanelContent').style.display = 'flex';
+                loadAdminMessages();
             }
+        });
+
+        // Клик по счетчику любви фанатов
+        function incrementLove() {
+            let loveCount = parseInt(localStorage.getItem('gafur_love') || 1420) + 1;
+            localStorage.setItem('gafur_love', loveCount);
+            document.getElementById('loveCounter').innerText = loveCount;
+            const lang = localStorage.getItem('gafur_lang') || 'ru';
+            showToast(translations[lang].toast_love);
         }
 
         let copyrightClicks = 0;
@@ -780,8 +815,7 @@
             if (copyrightClicks >= 3) {
                 copyrightClicks = 0;
                 switchPage('admin');
-                triggerConfetti();
-                showToast('Добро пожаловать в админ-панель!');
+                showToast('Админ-панель открыта');
             } else {
                 clickTimer = setTimeout(() => { copyrightClicks = 0; }, 600);
             }
@@ -811,15 +845,15 @@
             const toggleBtn = document.getElementById('armonToggle');
             dropdown.classList.toggle('show');
             toggleBtn.classList.toggle('active');
-            triggerConfetti();
         }
 
         function sendMessage() {
             const ig = document.getElementById('igAccount').value.trim();
             const text = document.getElementById('msgText').value.trim();
+            const lang = localStorage.getItem('gafur_lang') || 'ru';
 
             if(!ig || !text) {
-                showToast('Заполните все поля!');
+                showToast(lang === 'uz' ? 'Barcha maydonlarni to\'ldiring!' : lang === 'en' ? 'Fill in all fields!' : 'Заполните все поля!');
                 return;
             }
 
@@ -834,8 +868,7 @@
             messages.unshift(newMsg);
             localStorage.setItem('gafur_messages', JSON.stringify(messages));
 
-            triggerConfetti();
-            showToast('Сообщение отправлено!');
+            showToast(translations[lang].toast_sent);
             document.getElementById('igAccount').value = '';
             document.getElementById('msgText').value = '';
             switchPage('home');
@@ -850,8 +883,7 @@
                 loadAdminMessages();
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('adminPanelContent').style.display = 'flex';
-                triggerConfetti();
-                showToast('Успешный вход!');
+                showToast('Вход выполнен!');
             } else {
                 showToast('Неверный логин или пароль!');
             }
@@ -863,7 +895,7 @@
             document.getElementById('adminPass').value = '';
             document.getElementById('loginCard').style.display = 'flex';
             document.getElementById('adminPanelContent').style.display = 'none';
-            showToast('Вы вышли из системы');
+            showToast('Выход выполнен');
         }
 
         function loadAdminMessages() {
@@ -896,7 +928,7 @@
             messages = messages.filter(m => m.id !== id);
             localStorage.setItem('gafur_messages', JSON.stringify(messages));
             loadAdminMessages();
-            showToast('Сообщение удалено');
+            showToast('Удалено');
         }
 
         function escapeHtml(text) {
@@ -904,15 +936,8 @@
             return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
 
-        window.onload = function() {
-            if(localStorage.getItem('gafur_admin_logged') === 'true') {
-                document.getElementById('loginCard').style.display = 'none';
-                document.getElementById('adminPanelContent').style.display = 'flex';
-                loadAdminMessages();
-            }
-        }
-
         function sharePage() {
+            const lang = localStorage.getItem('gafur_lang') || 'ru';
             if (navigator.share) {
                 navigator.share({
                     title: 'Gafur Demo',
@@ -921,8 +946,7 @@
                 }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                triggerConfetti();
-                showToast('Ссылка скопирована в буфер обмена!');
+                showToast(translations[lang].toast_copied);
             }
         }
     </script>
