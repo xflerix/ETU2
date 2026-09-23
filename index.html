@@ -156,7 +156,6 @@
             box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
         }
 
-        /* Пульсирующая кнопка релиза ARMON */
         @keyframes neonPulse {
             0% { box-shadow: 0 0 5px rgba(0, 229, 255, 0.2), inset 0 0 5px rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.3); }
             50% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.5), inset 0 0 10px rgba(0, 229, 255, 0.2); border-color: rgba(0, 229, 255, 0.8); }
@@ -178,17 +177,21 @@
             transform: rotate(180deg);
         }
 
-        /* Выпадающий список платформ */
+        /* Выпадающий блок, в котором лежит ВСЁ (платформы, цитата, видео, счетчик) */
         .platforms-dropdown {
-            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            opacity: 0;
+            display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            padding: 5px 0;
-            animation: fadeInUp 0.4s ease forwards;
         }
         .platforms-dropdown.show {
-            display: flex;
+            max-height: 1200px;
+            opacity: 1;
+            margin-top: 14px;
         }
 
         .platform-btn {
@@ -199,7 +202,6 @@
             font-size: 14px;
         }
 
-        /* Блок концерта в Самарканде */
         .concert-card {
             background: linear-gradient(135deg, rgba(255, 107, 107, 0.12) 0%, rgba(238, 82, 83, 0.05) 100%);
             border: 1px solid rgba(255, 107, 107, 0.3);
@@ -259,7 +261,7 @@
         }
 
         .video-container {
-            margin-top: 20px;
+            margin-top: 10px;
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
@@ -286,7 +288,7 @@
             border-radius: 14px;
             font-size: 12px;
             color: #a4b0be;
-            margin-top: 15px;
+            margin-top: 5px;
         }
         .stats-box i {
             color: #ff4757;
@@ -341,7 +343,7 @@
                 </a>
             </div>
 
-            <!-- Кнопка-аккордеон Последний релиз с пульсацией -->
+            <!-- Главная кнопка релиза -->
             <div class="section-title">Последний релиз</div>
             <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
                 <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
@@ -349,7 +351,7 @@
                 <i class="fa-solid fa-chevron-down arrow-icon"></i>
             </div>
             
-            <!-- Выпадающий список платформ -->
+            <!-- ВЕСЬ КОНТЕНТ ТРЕКА (платформы, цитата, видео, счетчик), который прячется и открывается вместе -->
             <div class="platforms-dropdown" id="platformsDropdown">
                 <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
                     <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
@@ -379,22 +381,23 @@
                     <i class="fa-brands fa-itunes-note icon" style="color: #ea4335;"></i>
                     <span>iTunes</span>
                 </a>
-            </div>
-            
-            <!-- Цитата под релизом -->
-            <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
 
-            <!-- Видеоплеер -->
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- Цитата под платформами -->
+                <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
+
+                <!-- Видеоплеер -->
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+
+                <!-- Счетчик просмотров -->
+                <div class="stats-box">
+                    <i class="fa-solid fa-fire"></i>
+                    <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
+                </div>
             </div>
 
-            <!-- Счетчик просмотров -->
-            <div class="stats-box">
-                <i class="fa-solid fa-fire"></i>
-                <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
-            </div>
-
+            <!-- Контакты остаются в самом низу и спускаются, когда открывается блок трека -->
             <div class="section-title">Контакты</div>
             <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
                 <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
