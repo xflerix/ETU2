@@ -20,7 +20,21 @@
                 radial-gradient(circle at 20% 20%, rgba(106, 17, 203, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(37, 117, 252, 0.15) 0%, transparent 40%);
             background-attachment: fixed;
+            overflow-x: hidden;
         }
+
+        /* Анимация появления элементов снизу вверх */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .container {
             width: 100%;
             max-width: 420px;
@@ -28,7 +42,9 @@
             flex-direction: column;
             align-items: center;
             position: relative;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
         .share-btn {
             position: absolute;
             top: 0;
@@ -50,6 +66,7 @@
             background: rgba(255, 255, 255, 0.15);
             transform: scale(1.05);
         }
+
         .profile-title {
             font-size: 26px;
             font-weight: 800;
@@ -62,22 +79,34 @@
             -webkit-text-fill-color: transparent;
             text-align: center;
         }
+
         .description {
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 12px;
             font-weight: 500;
             line-height: 1.5;
             color: #b2bec3;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
+
+        .quote {
+            font-size: 12px;
+            font-style: italic;
+            color: #8c7ae6;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
         .links-wrapper {
             width: 100%;
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
+
         .link-btn {
             display: flex;
             align-items: center;
@@ -114,6 +143,7 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 25px rgba(0,0,0,0.3);
         }
+
         .section-title {
             margin: 24px 0 8px;
             font-size: 11px;
@@ -124,6 +154,7 @@
             width: 100%;
             font-weight: 700;
         }
+
         .official-btn {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             border: none;
@@ -133,10 +164,12 @@
             background: linear-gradient(135deg, #7a22db 0%, #3585fc 100%);
             box-shadow: 0 6px 25px rgba(37, 117, 252, 0.5);
         }
+
         .armon-btn {
             background: rgba(255, 255, 255, 0.06);
             border-color: rgba(0, 229, 255, 0.3);
         }
+
         .live-badge {
             background: #00e5ff;
             color: #000;
@@ -146,8 +179,27 @@
             border-radius: 20px;
             letter-spacing: 1px;
         }
+
+        .stats-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            font-size: 12px;
+            color: #a4b0be;
+            margin-top: 4px;
+        }
+        .stats-box i {
+            color: #ff4757;
+        }
+
         .video-container {
-            margin-top: 35px;
+            margin-top: 25px;
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
@@ -161,6 +213,7 @@
             border: none;
             display: block;
         }
+
         footer {
             margin-top: 40px;
             font-size: 11px;
@@ -179,6 +232,7 @@
 
         <h1 class="profile-title">Gafur Demo</h1>
         <p class="description">Самый крупный и официальный фан аккаунт</p>
+        <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
 
         <div class="links-wrapper">
             <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn">
@@ -205,6 +259,17 @@
                 <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
                 <span>ARMON</span>
                 <div class="live-badge">OUT NOW</div>
+            </a>
+            
+            <div class="stats-box">
+                <i class="fa-solid fa-fire"></i>
+                <span>Клип Armon на YouTube: <strong>3.1M+ просмотров</strong></span>
+            </div>
+
+            <div class="section-title">Контакты</div>
+            <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
+                <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
+                <span>Booking: +7 912 227 87 47</span>
             </a>
         </div>
 
