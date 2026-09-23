@@ -156,9 +156,16 @@
             box-shadow: 0 6px 20px rgba(37, 117, 252, 0.5);
         }
 
+        /* Пульсирующая кнопка релиза ARMON */
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 5px rgba(0, 229, 255, 0.2), inset 0 0 5px rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.5), inset 0 0 10px rgba(0, 229, 255, 0.2); border-color: rgba(0, 229, 255, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(0, 229, 255, 0.2), inset 0 0 5px rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.3); }
+        }
+
         .armon-main-btn {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: rgba(0, 229, 255, 0.4);
+            background: rgba(0, 229, 255, 0.08);
+            animation: neonPulse 3s infinite;
         }
         .armon-main-btn .arrow-icon {
             margin-right: 0;
@@ -177,7 +184,7 @@
             flex-direction: column;
             gap: 10px;
             width: 100%;
-            padding: 10px 0 5px 0;
+            padding: 5px 0;
             animation: fadeInUp 0.4s ease forwards;
         }
         .platforms-dropdown.show {
@@ -188,8 +195,56 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 30px;
-            padding: 12px 20px;
+            padding: 14px 20px;
             font-size: 14px;
+        }
+
+        /* Блок концерта в Самарканде */
+        .concert-card {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.12) 0%, rgba(238, 82, 83, 0.05) 100%);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            margin-top: 5px;
+            box-shadow: 0 8px 25px rgba(238, 82, 83, 0.15);
+        }
+        .concert-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ff6b6b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .concert-info {
+            font-size: 13px;
+            color: #dfe6e9;
+            line-height: 1.4;
+        }
+        .concert-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(238, 82, 83, 0.4);
+            transition: all 0.3s ease;
+        }
+        .concert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 82, 83, 0.6);
         }
 
         .quote {
@@ -276,7 +331,17 @@
                 <span>@gafur.lv</span>
             </a>
 
-            <!-- Кнопка-аккордеон Последний релиз: ARMON -->
+            <!-- Анонс концерта в Самарканде -->
+            <div class="section-title">Ближайшее событие</div>
+            <div class="concert-card">
+                <div class="concert-title"><i class="fa-solid fa-calendar-days"></i> Концерт в Самарканде</div>
+                <div class="concert-info"><strong>17 октября</strong> • Family Park<br>New Art Show</div>
+                <a href="https://iticket.uz/events/concerts/new-art-show-gsamarkand/54270" target="_blank" class="concert-btn">
+                    <i class="fa-solid fa-ticket"></i> Купить билеты
+                </a>
+            </div>
+
+            <!-- Кнопка-аккордеон Последний релиз с пульсацией -->
             <div class="section-title">Последний релиз</div>
             <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
                 <i class="fa-solid fa-compact-disc icon" style="color: #00e5ff;"></i>
