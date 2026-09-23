@@ -103,9 +103,7 @@
             padding: 30px 20px;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
-        .sidebar.open {
-            left: 0;
-        }
+        .sidebar.open { left: 0; }
         .sidebar-header {
             font-size: 18px;
             font-weight: 800;
@@ -151,10 +149,8 @@
 
         .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
             z-index: 90;
@@ -427,13 +423,8 @@
             outline: none;
             transition: border-color 0.3s;
         }
-        .form-input:focus, .form-textarea:focus {
-            border-color: #00e5ff;
-        }
-        .form-textarea {
-            resize: none;
-            height: 120px;
-        }
+        .form-input:focus, .form-textarea:focus { border-color: #00e5ff; }
+        .form-textarea { resize: none; height: 120px; }
         .submit-btn {
             background: linear-gradient(135deg, #00e5ff 0%, #2575fc 100%);
             border: none;
@@ -467,17 +458,8 @@
             color: #00e5ff;
             font-weight: 700;
         }
-        .msg-time {
-            font-size: 10px;
-            color: #636e72;
-            font-weight: 400;
-        }
-        .msg-text {
-            font-size: 13px;
-            color: #dfe6e9;
-            word-break: break-word;
-            line-height: 1.4;
-        }
+        .msg-time { font-size: 10px; color: #636e72; font-weight: 400; }
+        .msg-text { font-size: 13px; color: #dfe6e9; word-break: break-word; line-height: 1.4; }
         .del-msg-btn {
             background: rgba(255, 71, 87, 0.2);
             border: 1px solid rgba(255, 71, 87, 0.4);
@@ -498,13 +480,17 @@
             text-align: center;
             letter-spacing: 1px;
             text-transform: uppercase;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.3s;
         }
+        footer:hover { color: #a29bfe; }
     </style>
 </head>
 <body>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <!-- Выдвижное боковое меню -->
+    <!-- Выдвижное боковое меню (только главная и сообщение) -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <span>МЕНЮ САЙТА</span>
@@ -513,7 +499,6 @@
         <div class="sidebar-links">
             <a class="sidebar-item" onclick="switchPage('home')"><i class="fa-solid fa-house" style="color: #00e5ff;"></i> Главная</a>
             <a class="sidebar-item" onclick="switchPage('message')"><i class="fa-solid fa-paper-plane" style="color: #ff7675;"></i> Сообщение Гафуру</a>
-            <a class="sidebar-item" onclick="switchPage('admin')"><i class="fa-solid fa-lock" style="color: #ffeaa7;"></i> Админ-панель</a>
         </div>
     </div>
 
@@ -640,9 +625,9 @@
             </a>
         </div>
 
-        <!-- РАЗДЕЛ 3: АДМИН-ПАНЕЛЬ -->
+        <!-- РАЗДЕЛ 3: СЕКРЕТНАЯ АДМИН-ПАНЕЛЬ -->
         <div class="page-section" id="page-admin">
-            <div class="section-title">Вход в админ-панель</div>
+            <div class="section-title">Секретная админ-панель</div>
             
             <!-- Форма авторизации -->
             <div class="form-card" id="loginCard">
@@ -673,12 +658,31 @@
             </a>
         </div>
 
-        <footer>
+        <!-- Тройной клик по копирайту открывает админку -->
+        <footer onclick="handleSecretClick()">
             © 2026 Gafur Demo
         </footer>
     </div>
 
     <script>
+        let copyrightClicks = 0;
+        let clickTimer = null;
+
+        // Секретный вход по тройному клику на копирайт внизу
+        function handleSecretClick() {
+            copyrightClicks++;
+            if (clickTimer) clearTimeout(clickTimer);
+            
+            if (copyrightClicks >= 3) {
+                copyrightClicks = 0;
+                switchPage('admin');
+            } else {
+                clickTimer = setTimeout(() => {
+                    copyrightClicks = 0;
+                }, 600); // сброс если кликают слишком медленно
+            }
+        }
+
         // Управление боковым меню
         function toggleMenu() {
             const sidebar = document.getElementById('sidebar');
