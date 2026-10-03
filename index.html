@@ -1,888 +1,116 @@
-<<!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gafur Demo | Official Fanpage</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>АЗС Радар УЗ</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=21142e8f-7848-4389-bedc-994119d67566&lang=ru_RU"></script>
     <style>
-        :root[data-theme="dark"] {
-            --bg-color: #030305;
-            --card-bg: rgba(255, 255, 255, 0.035);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(255, 255, 255, 0.08);
-            --accent-cyan: #00f2fe;
-            --accent-purple: #a29bfe;
-            --text-main: #ffffff;
-            --text-muted: #8c92a4;
-            --sidebar-bg: rgba(8, 8, 14, 0.97);
+        body { 
+            margin: 0; padding: 0; font-family: sans-serif; 
+            background: var(--tg-theme-bg-color, #1c1c1d); 
+            color: var(--tg-theme-text-color, #ffffff);
         }
-
-        :root[data-theme="light"] {
-            --bg-color: #f2f4f8;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --card-border: rgba(0, 0, 0, 0.06);
-            --card-hover: rgba(255, 255, 255, 1);
-            --accent-cyan: #0077ff;
-            --accent-purple: #6c5ce7;
-            --text-main: #1e272e;
-            --text-muted: #57606f;
-            --sidebar-bg: rgba(255, 255, 255, 0.96);
+        #map { width: 100vw; height: 50vh; }
+        .panel { padding: 15px; }
+        select, input {
+            width: 100%; padding: 10px; margin-bottom: 10px;
+            border-radius: 8px; border: 1px solid #333;
+            background: var(--tg-theme-secondary-bg-color, #2c2c2e);
+            color: var(--tg-theme-text-color, #ffffff);
+            box-sizing: border-box; font-size: 16px;
         }
-
-        :root[data-theme="neon"] {
-            --bg-color: #0b0214;
-            --card-bg: rgba(155, 89, 182, 0.05);
-            --card-border: rgba(155, 89, 182, 0.2);
-            --card-hover: rgba(155, 89, 182, 0.12);
-            --accent-cyan: #ff007f;
-            --accent-purple: #9b59b6;
-            --text-main: #ffffff;
-            --text-muted: #d8b4fe;
-            --sidebar-bg: rgba(18, 5, 28, 0.98);
+        .btn { 
+            display: block; width: 100%; padding: 14px; margin-top: 10px;
+            background: var(--tg-theme-button-color, #007aff); 
+            color: var(--tg-theme-button-text-color, #fff);
+            border: none; border-radius: 8px; font-weight: bold; font-size: 16px;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            background-image: 
-                radial-gradient(circle at 15% 10%, rgba(106, 17, 203, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 90%, rgba(0, 242, 254, 0.1) 0%, transparent 50%);
-            background-attachment: fixed;
-            overflow-x: hidden;
-            transition: background 0.4s ease, color 0.4s ease;
+        .history { margin-top: 20px; font-size: 14px; }
+        .history-item { 
+            padding: 10px; border-bottom: 1px solid #333; 
+            display: flex; justify-content: space-between;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(15, 15, 25, 0.95);
-            border: 1px solid var(--accent-cyan);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
-            opacity: 0;
-            pointer-events: none;
-        }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        .top-bar {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .icon-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(12px);
-        }
-        .icon-btn:hover {
-            background: var(--card-hover);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: scale(1.08);
-        }
-
-        .profile-header {
-            text-align: center;
-            margin-bottom: 25px;
-            cursor: pointer; /* Указывает фанатам, что сюда можно кликнуть */
-            user-select: none;
-        }
-        .profile-title {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-purple) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .description {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0; left: -100%;
-            width: 310px;
-            height: 100%;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(25px);
-            border-right: 1px solid var(--card-border);
-            z-index: 100;
-            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 30px 24px;
-            box-shadow: 25px 0 60px rgba(0,0,0,0.5);
-        }
-        .sidebar.open { left: 0; }
-        .sidebar-header {
-            font-size: 15px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            letter-spacing: 1.5px;
-            color: var(--accent-cyan);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .close-sidebar {
-            background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; transition: transform 0.3s;
-        }
-        .close-sidebar:hover { transform: rotate(90deg); }
-
-        .sidebar-links { display: flex; flex-direction: column; gap: 12px; }
-        .sidebar-item {
-            padding: 16px 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .sidebar-item:hover {
-            background: rgba(0, 242, 254, 0.08);
-            border-color: rgba(0, 242, 254, 0.3);
-            color: var(--accent-cyan);
-            transform: translateX(4px);
-        }
-        .beta-badge {
-            background: rgba(255, 118, 117, 0.15);
-            border: 1px solid rgba(255, 118, 117, 0.4);
-            color: #ff7675;
-            font-size: 9px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
-            letter-spacing: 1px;
-        }
-
-        .settings-block {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .settings-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-        }
-        .settings-row {
-            display: flex;
-            gap: 8px;
-        }
-        .settings-btn {
-            flex: 1;
-            padding: 10px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        .settings-btn:hover { border-color: var(--accent-cyan); }
-        .settings-btn.active {
-            background: var(--accent-cyan);
-            color: #030305;
-            border-color: var(--accent-cyan);
-            font-weight: 700;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 90;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .overlay.show { display: block; opacity: 1; }
-
-        .links-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            position: relative;
-            width: 100%;
-            padding: 16px 24px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            backdrop-filter: blur(12px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            cursor: pointer;
-        }
-        .link-btn i.icon {
-            font-size: 18px; width: 26px; text-align: center; margin-right: 14px;
-        }
-        .link-btn span { flex-grow: 1; text-align: center; margin-right: 26px; }
-        .link-btn:hover {
-            background: var(--card-hover);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-        }
-
-        .section-title {
-            margin: 24px 0 10px;
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            text-align: center;
-            width: 100%;
-            font-weight: 700;
-        }
-
-        .official-btn {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            border: none;
-            color: #fff !important;
-            box-shadow: 0 4px 25px rgba(37, 117, 252, 0.35);
-        }
-        .official-btn:hover {
-            background: linear-gradient(135deg, #7a22db 0%, #3585fc 100%);
-            box-shadow: 0 6px 30px rgba(37, 117, 252, 0.5);
-        }
-
-        @keyframes neonPulse {
-            0% { box-shadow: 0 0 10px rgba(0, 242, 254, 0.15), inset 0 0 5px rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.3); }
-            50% { box-shadow: 0 0 30px rgba(0, 242, 254, 0.45), inset 0 0 12px rgba(0, 242, 254, 0.25); border-color: rgba(0, 242, 254, 0.8); }
-            100% { box-shadow: 0 0 10px rgba(0, 242, 254, 0.15), inset 0 0 5px rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.3); }
-        }
-
-        .armon-main-btn {
-            background: rgba(0, 242, 254, 0.05);
-            animation: neonPulse 3.5s infinite;
-        }
-        .armon-main-btn .arrow-icon {
-            margin-right: 0;
-            margin-left: 10px;
-            transition: transform 0.4s ease;
-            font-size: 14px;
-            color: var(--accent-cyan);
-        }
-        .armon-main-btn.active .arrow-icon { transform: rotate(180deg); }
-
-        .platforms-dropdown {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
-            opacity: 0; display: flex; flex-direction: column; gap: 12px; width: 100%;
-        }
-        .platforms-dropdown.show { max-height: 1200px; opacity: 1; margin-top: 14px; }
-
-        .platform-btn {
-            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 14px 20px; font-size: 13px;
-        }
-
-        .concert-card {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.08) 0%, rgba(238, 82, 83, 0.02) 100%);
-            border: 1px solid rgba(255, 107, 107, 0.25); border-radius: 24px; padding: 22px;
-            display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
-            box-shadow: 0 10px 30px rgba(238, 82, 83, 0.12);
-        }
-        .concert-title { font-size: 13px; font-weight: 700; color: #ff6b6b; text-transform: uppercase; letter-spacing: 1px; }
-        .concert-info { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
-        
-        /* Стили таймера */
-        .countdown {
-            display: flex; gap: 8px; margin: 5px 0; justify-content: center; width: 100%;
-        }
-        .time-box {
-            background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(238, 82, 83, 0.2);
-            border-radius: 12px; padding: 10px 8px; flex: 1; text-align: center;
-        }
-        .time-num { font-size: 18px; font-weight: 800; color: #ff6b6b; margin-bottom: 2px;}
-        .time-label { font-size: 9px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;}
-
-        .concert-btn {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%); border: none; border-radius: 20px; padding: 12px 20px;
-            color: #fff; font-weight: 700; font-size: 13px; text-decoration: none; width: 100%;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 20px rgba(238, 82, 83, 0.35); transition: all 0.3s ease; margin-top: 5px;
-        }
-        .concert-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(238, 82, 83, 0.5); }
-
-        .quote {
-            font-size: 12px; font-style: italic; color: var(--accent-purple); margin-top: 10px; margin-bottom: 4px; text-align: center; letter-spacing: 0.5px; width: 100%;
-        }
-
-        .video-container {
-            margin-top: 10px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: #000; border: 1px solid var(--card-border);
-        }
-        .video-container iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
-
-        .stats-box {
-            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; font-size: 12px; color: var(--text-muted); margin-top: 5px;
-        }
-        .stats-box i { color: #ff4757; }
-
-        .page-section { display: none; width: 100%; flex-direction: column; gap: 16px; animation: fadeIn 0.4s ease forwards; }
-        .page-section.active { display: flex; }
-
-        .form-card {
-            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 18px; backdrop-filter: blur(16px);
-        }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
-        .form-input, .form-textarea {
-            width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--card-border); border-radius: 16px; color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.3s;
-        }
-        .form-input:focus, .form-textarea:focus { border-color: var(--accent-cyan); }
-        .form-textarea { resize: none; height: 130px; }
-        .submit-btn {
-            background: linear-gradient(135deg, var(--accent-cyan) 0%, #2575fc 100%); border: none; border-radius: 20px; padding: 15px; color: #030305; font-weight: 800; font-size: 14px; cursor: pointer; transition: transform 0.3s ease; box-shadow: 0 4px 20px rgba(0, 242, 254, 0.25);
-        }
-        .submit-btn:hover { transform: translateY(-2px); }
-
-        /* Стили Секретной пасхалки */
-        .easter-egg-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px);
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease; padding: 20px; text-align: center;
-        }
-        .easter-egg-overlay.active { opacity: 1; pointer-events: auto; }
-        .secret-box {
-            background: linear-gradient(135deg, rgba(0,242,254,0.05), rgba(162,155,254,0.1));
-            border: 1px solid var(--accent-cyan);
-            padding: 40px 30px; border-radius: 24px;
-            box-shadow: 0 0 50px rgba(0,242,254,0.25);
-            transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 100%; max-width: 340px;
-        }
-        .easter-egg-overlay.active .secret-box { transform: scale(1); }
-        .secret-title { font-size: 20px; color: var(--accent-cyan); margin-bottom: 15px; font-weight: 800; text-transform: uppercase;}
-        .secret-text { font-size: 14px; line-height: 1.6; color: #fff; margin-bottom: 25px;}
-        .secret-close { color: rgba(255,255,255,0.5); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer;}
-        
-        footer {
-            margin-top: 45px; font-size: 11px; color: var(--text-muted); text-align: center; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; user-select: none; transition: color 0.3s;
-        }
-        footer:hover { color: var(--accent-purple); }
     </style>
 </head>
 <body>
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="toast" id="toast" data-tr="toast_copied">Ссылка скопирована!</div>
 
-    <!-- Секретный экран (Пасхалка) -->
-    <div class="easter-egg-overlay" id="easterEgg" onclick="closeEasterEgg()">
-        <div class="secret-box" onclick="event.stopPropagation()">
-            <div class="secret-title" data-tr="secret_title">Секрет открыт! 🤫</div>
-            <div class="secret-text" data-tr="secret_text">Спасибо, что следишь за творчеством и поддерживаешь артиста. Ты — настоящий фанат! ♾️</div>
-            <div class="secret-close" onclick="closeEasterEgg()" data-tr="secret_close">Нажми, чтобы закрыть</div>
+    <div id="map"></div>
+    
+    <div class="panel">
+        <h3>Мое авто</h3>
+        <select id="carSelect" onchange="saveSettings()">
+            <option value="Chevrolet Onix Premier">Chevrolet Onix Premier</option>
+            <option value="Chevrolet Cobalt">Chevrolet Cobalt</option>
+            <option value="Chevrolet Malibu 2 Premier">Chevrolet Malibu 2 Premier</option>
+            <option value="Daewoo Matiz (белый)">Daewoo Matiz</option>
+        </select>
+
+        <h3>Добавить заправку</h3>
+        <input type="number" id="expenseAmount" placeholder="Сумма в сумах (например, 150000)">
+        <button class="btn" onclick="addExpense()">Записать расход</button>
+
+        <div class="history">
+            <h3>История заправок</h3>
+            <div id="historyList">Пока пусто</div>
         </div>
-    </div>
-
-    <!-- Боковое меню с настройками -->
-    <div class="sidebar" id="sidebar">
-        <div>
-            <div class="sidebar-header">
-                <span data-tr="menu_title">МЕНЮ САЙТА</span>
-                <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="sidebar-links">
-                <a class="sidebar-item" onclick="switchPage('home')">
-                    <span><i class="fa-solid fa-house" style="color: var(--accent-cyan); margin-right: 12px;"></i> <span data-tr="nav_home">Главная</span></span>
-                    <i class="fa-solid fa-chevron-right" style="font-size: 11px; color: var(--text-muted);"></i>
-                </a>
-                <a class="sidebar-item" onclick="switchPage('message')">
-                    <span><i class="fa-solid fa-paper-plane" style="color: #ff7675; margin-right: 12px;"></i> <span data-tr="nav_msg">Сообщение Гафуру</span></span>
-                    <span class="beta-badge">BETA</span>
-                </a>
-            </div>
-        </div>
-
-        <div class="settings-block">
-            <div class="settings-label" data-tr="set_lang">Язык / Language</div>
-            <div class="settings-row">
-                <button class="settings-btn active" id="lang-ru" onclick="setLanguage('ru')">РУС</button>
-                <button class="settings-btn" id="lang-uz" onclick="setLanguage('uz')">OʻZB</button>
-                <button class="settings-btn" id="lang-en" onclick="setLanguage('en')">ENG</button>
-            </div>
-
-            <div class="settings-label" data-tr="set_theme">Тема оформления</div>
-            <div class="settings-row">
-                <button class="settings-btn active" id="theme-dark" onclick="setTheme('dark')" data-tr="theme_dark">Тёмная</button>
-                <button class="settings-btn" id="theme-light" onclick="setTheme('light')" data-tr="theme_light">Светлая</button>
-                <button class="settings-btn" id="theme-neon" onclick="setTheme('neon')" data-tr="theme_neon">Неон</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Верхняя панель -->
-        <div class="top-bar">
-            <button class="icon-btn" onclick="toggleMenu()" title="Меню">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <button class="icon-btn" onclick="sharePage()" title="Поделиться">
-                <i class="fa-solid fa-share-nodes"></i>
-            </button>
-        </div>
-
-        <!-- Шапка (Кликни 5 раз для пасхалки!) -->
-        <div class="profile-header" onclick="triggerEasterEgg()">
-            <h1 class="profile-title">Gafur Demo</h1>
-            <p class="description" data-tr="profile_desc">Самый крупный и официальный фан аккаунт</p>
-        </div>
-
-        <!-- РАЗДЕЛ 1: ГЛАВНАЯ -->
-        <div class="page-section active" id="page-home">
-            <div class="links-wrapper">
-                <a href="https://instagram.com/gafur.demo" target="_blank" class="link-btn">
-                    <i class="fa-brands fa-instagram icon" style="color: #e1306c;"></i>
-                    <span>Instagram</span>
-                </a>
-                <a href="https://youtube.com/@gafurdemo" target="_blank" class="link-btn">
-                    <i class="fa-brands fa-youtube icon" style="color: #ff0000;"></i>
-                    <span>YouTube</span>
-                </a>
-                <a href="https://tiktok.com/@gafur.demo" target="_blank" class="link-btn">
-                    <i class="fa-brands fa-tiktok icon" style="color: #00f2fe;"></i>
-                    <span>TikTok</span>
-                </a>
-                
-                <div class="section-title" data-tr="sec_official">Официальный аккаунт</div>
-                <a href="https://instagram.com/gafur.lv" target="_blank" class="link-btn official-btn">
-                    <i class="fa-solid fa-circle-check icon" style="color: #fff;"></i>
-                    <span>@gafur.lv</span>
-                </a>
-
-                <!-- Концерт в Самарканде с ТАЙМЕРОМ -->
-                <div class="section-title" data-tr="sec_event">Ближайшее событие</div>
-                <div class="concert-card">
-                    <div class="concert-title"><i class="fa-solid fa-calendar-days"></i> <span data-tr="concert_title">Концерт в Самарканде</span></div>
-                    <div class="concert-info"><strong>17 октября</strong> • Family Park</div>
-                    
-                    <!-- ТАЙМЕР -->
-                    <div class="countdown" id="concertTimer">
-                        <div class="time-box"><div class="time-num" id="t-days">00</div><div class="time-label" data-tr="t_days">Дней</div></div>
-                        <div class="time-box"><div class="time-num" id="t-hours">00</div><div class="time-label" data-tr="t_hours">Часов</div></div>
-                        <div class="time-box"><div class="time-num" id="t-mins">00</div><div class="time-label" data-tr="t_mins">Минут</div></div>
-                        <div class="time-box"><div class="time-num" id="t-secs">00</div><div class="time-label" data-tr="t_secs">Секунд</div></div>
-                    </div>
-
-                    <a href="https://iticket.uz/events/concerts/new-art-show-gsamarkand/54270" target="_blank" class="concert-btn">
-                        <i class="fa-solid fa-ticket"></i> <span data-tr="concert_btn">Купить билеты</span>
-                    </a>
-                </div>
-
-                <div class="section-title" data-tr="sec_release">Последний релиз</div>
-                <div class="link-btn armon-main-btn" id="armonToggle" onclick="togglePlatforms()">
-                    <i class="fa-solid fa-compact-disc icon" style="color: var(--accent-cyan);"></i>
-                    <span>ARMON</span>
-                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
-                </div>
-                
-                <div class="platforms-dropdown" id="platformsDropdown">
-                    <a href="https://music.yandex.ru/album/43425758/track/154509219?ref_id=3139EF60-A2E6-4806-ACE0-EEA99D961978" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-solid fa-music icon" style="color: #ffcc00;"></i>
-                        <span>Яндекс Музыка</span>
-                    </a>
-                    <a href="https://open.spotify.com/album/3TeltNzFM08Ot5Y4QK5j5s" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-brands fa-spotify icon" style="color: #1ed760;"></i>
-                        <span>Spotify</span>
-                    </a>
-                    <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-brands fa-apple icon" style="color: #fa57c1;"></i>
-                        <span>Apple Music</span>
-                    </a>
-                    <a href="https://music.vk.com/link/eUk2b" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-brands fa-vk icon" style="color: #0077ff;"></i>
-                        <span>VK Музыка</span>
-                    </a>
-                    <a href="https://music.mts.ru/album/43425758" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-solid fa-headphones icon" style="color: #e30613;"></i>
-                        <span>Kion Music</span>
-                    </a>
-                    <a href="https://www.deezer.com/album/1047727962" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-solid fa-compact-disc icon" style="color: var(--accent-purple);"></i>
-                        <span>Deezer</span>
-                    </a>
-                    <a href="https://music.apple.com/ru/album/6798668606" target="_blank" class="link-btn platform-btn">
-                        <i class="fa-brands fa-itunes-note icon" style="color: #ea4335;"></i>
-                        <span>iTunes</span>
-                    </a>
-
-                    <div class="quote">«Bir lahzalik uchrashuv armon endi...»</div>
-
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/c3hGzK-gwBk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-
-                    <div class="stats-box">
-                        <i class="fa-solid fa-fire"></i>
-                        <span><span data-tr="stat_clip">Клип Armon на YouTube</span>: <strong>3.1M+ <span data-tr="stat_views">просмотров</span></strong></span>
-                    </div>
-                </div>
-
-                <div class="section-title" data-tr="sec_contacts">Контакты</div>
-                <a href="tel:+79122278747" class="link-btn" style="border-color: rgba(46, 213, 115, 0.3);">
-                    <i class="fa-solid fa-phone icon" style="color: #2ed573;"></i>
-                    <span>Booking: +7 912 227 87 47</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- РАЗДЕЛ 2: СООБЩЕНИЕ ГАФУРУ -->
-        <div class="page-section" id="page-message">
-            <div class="section-title" data-tr="msg_to_artist">Написать артисту</div>
-            <div class="form-card">
-                <div class="form-group">
-                    <label data-tr="label_ig">Ваш Instagram аккаунт</label>
-                    <input type="text" id="igAccount" class="form-input" placeholder="@username">
-                </div>
-                <div class="form-group">
-                    <label data-tr="label_text">Ваше сообщение</label>
-                    <textarea id="msgText" class="form-textarea" placeholder="Введите текст сообщения..."></textarea>
-                </div>
-                <button class="submit-btn" onclick="sendMessage()" data-tr="btn_send">Отправить сообщение</button>
-            </div>
-            <a class="link-btn" style="margin-top: 5px; justify-content: center;" onclick="switchPage('home')">
-                <i class="fa-solid fa-arrow-left"></i> <span data-tr="back_home">На главную</span>
-            </a>
-        </div>
-
-        <!-- Секретная админ-панель -->
-        <div class="page-section" id="page-admin">
-            <div class="section-title">Секретная админ-панель</div>
-            <div class="form-card" id="loginCard">
-                <div class="form-group">
-                    <label>Логин</label>
-                    <input type="text" id="adminUser" class="form-input" placeholder="Введите логин">
-                </div>
-                <div class="form-group">
-                    <label>Пароль</label>
-                    <input type="password" id="adminPass" class="form-input" placeholder="Введите пароль">
-                </div>
-                <button class="submit-btn" onclick="checkAuth()">Войти</button>
-            </div>
-            <div id="adminPanelContent" style="display: none; flex-direction: column; gap: 12px; width: 100%;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-size: 13px; color: var(--accent-cyan); font-weight: 700;">Вход выполнен успешно</span>
-                    <button onclick="logoutAdmin()" class="del-msg-btn">Выйти</button>
-                </div>
-                <div id="messagesContainer" style="display: flex; flex-direction: column; gap: 12px; width: 100%;"></div>
-            </div>
-            <a class="link-btn" style="margin-top: 5px; justify-content: center;" onclick="switchPage('home')">
-                <i class="fa-solid fa-arrow-left"></i> <span data-tr="back_home">На главную</span>
-            </a>
-        </div>
-
-        <!-- Тройной клик на копирайт открывает админку -->
-        <footer onclick="handleAdminClick()">
-            © 2026 Gafur Demo
-        </footer>
     </div>
 
     <script>
-        const translations = {
-            ru: {
-                menu_title: "МЕНЮ САЙТА", nav_home: "Главная", nav_msg: "Сообщение Гафуру",
-                set_lang: "Язык / Language", set_theme: "Тема оформления",
-                theme_dark: "Тёмная", theme_light: "Светлая", theme_neon: "Неон",
-                profile_desc: "Самый крупный и официальный фан аккаунт",
-                sec_official: "Официальный аккаунт", sec_event: "Ближайшее событие",
-                concert_title: "Концерт в Самарканде", concert_btn: "Купить билеты",
-                t_days: "Дней", t_hours: "Часов", t_mins: "Минут", t_secs: "Секунд",
-                sec_release: "Последний релиз", stat_clip: "Клип Armon на YouTube", stat_views: "просмотров",
-                sec_contacts: "Контакты", msg_to_artist: "Написать артисту",
-                label_ig: "Ваш Instagram аккаунт", label_text: "Ваше сообщение", btn_send: "Отправить сообщение",
-                back_home: "На главную", toast_copied: "Ссылка скопирована!", toast_sent: "Сообщение отправлено!",
-                secret_title: "Секрет открыт! 🤫", secret_text: "Спасибо, что следишь за творчеством и поддерживаешь артиста. Ты — настоящий фанат! ♾️", secret_close: "Нажми, чтобы закрыть"
-            },
-            uz: {
-                menu_title: "SAYT MENYUSI", nav_home: "Bosh sahifa", nav_msg: "Gafurga xabar yuborish",
-                set_lang: "Til / Language", set_theme: "Mavzu (Tema)",
-                theme_dark: "Tungi", theme_light: "Kunduzgi", theme_neon: "Neon",
-                profile_desc: "Eng yirik va rasmiy fan akkaunt",
-                sec_official: "Rasmiy sahifa", sec_event: "Yaqin tadbir",
-                concert_title: "Samarqanddagi konsert", concert_btn: "Chipta olish",
-                t_days: "Kun", t_hours: "Soat", t_mins: "Daqiqa", t_secs: "Soniya",
-                sec_release: "So'nggi trek", stat_clip: "Armon klipi Youtubeda", stat_views: "marta ko'rilgan",
-                sec_contacts: "Aloqa", msg_to_artist: "Artistga yozish",
-                label_ig: "Sizning Instagram akkountingiz", label_text: "Xabaringiz matni", btn_send: "Xabarni yuborish",
-                back_home: "Bosh sahifaga", toast_copied: "Havola nusxalandi!", toast_sent: "Xabar yuborildi!",
-                secret_title: "Sir ochildi! 🤫", secret_text: "Ijodni kuzatib, qo'llab-quvvatlayotganingiz uchun rahmat. Siz haqiqiy muxlissiz! ♾️", secret_close: "Yopish uchun bosing"
-            },
-            en: {
-                menu_title: "SITE MENU", nav_home: "Home", nav_msg: "Message to Gafur",
-                set_lang: "Language", set_theme: "Theme",
-                theme_dark: "Dark", theme_light: "Light", theme_neon: "Neon",
-                profile_desc: "The largest & official fan page",
-                sec_official: "Official Account", sec_event: "Upcoming Event",
-                concert_title: "Concert in Samarkand", concert_btn: "Buy Tickets",
-                t_days: "Days", t_hours: "Hours", t_mins: "Mins", t_secs: "Secs",
-                sec_release: "Latest Release", stat_clip: "Armon music video on YouTube", stat_views: "views",
-                sec_contacts: "Contacts", msg_to_artist: "Write to Artist",
-                label_ig: "Your Instagram account", label_text: "Your message", btn_send: "Send message",
-                back_home: "Back to Home", toast_copied: "Link copied!", toast_sent: "Message sent!",
-                secret_title: "Secret unlocked! 🤫", secret_text: "Thank you for following and supporting the art. You are a true fan! ♾️", secret_close: "Click to close"
-            }
-        };
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-        // Логика Таймера
-        const concertDate = new Date("Oct 17, 2026 19:00:00").getTime();
-        function updateTimer() {
-            const now = new Date().getTime();
-            const distance = concertDate - now;
-
-            if (distance < 0) {
-                document.getElementById('concertTimer').innerHTML = "<div style='color:#ff6b6b; font-weight:700; padding:10px;'>Концерт начался! 🎉</div>";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('t-days').innerText = days < 10 ? '0' + days : days;
-            document.getElementById('t-hours').innerText = hours < 10 ? '0' + hours : hours;
-            document.getElementById('t-mins').innerText = minutes < 10 ? '0' + minutes : minutes;
-            document.getElementById('t-secs').innerText = seconds < 10 ? '0' + seconds : seconds;
-        }
-        setInterval(updateTimer, 1000);
-        updateTimer();
-
-        // Пасхалка (5 кликов по заголовку)
-        let headerClicks = 0;
-        let headerTimer = null;
-        function triggerEasterEgg() {
-            headerClicks++;
-            if (headerTimer) clearTimeout(headerTimer);
-            if (headerClicks >= 5) {
-                headerClicks = 0;
-                document.getElementById('easterEgg').classList.add('active');
-                if (navigator.vibrate) navigator.vibrate(200); // Вибрация на телефоне
-            } else {
-                headerTimer = setTimeout(() => { headerClicks = 0; }, 600);
-            }
-        }
-        function closeEasterEgg() {
-            document.getElementById('easterEgg').classList.remove('active');
-        }
-
-        // Админка (3 клика по копирайту)
-        let adminClicks = 0;
-        let adminTimer = null;
-        function handleAdminClick() {
-            adminClicks++;
-            if (adminTimer) clearTimeout(adminTimer);
-            if (adminClicks >= 3) {
-                adminClicks = 0;
-                switchPage('admin');
-                showToast('Админ-панель открыта');
-            } else {
-                adminTimer = setTimeout(() => { adminClicks = 0; }, 600);
-            }
-        }
-
-        // Остальная логика сайта (Тема, язык, меню)
-        function setLanguage(lang) {
-            document.querySelectorAll('.settings-row button[id^="lang-"]').forEach(b => b.classList.remove('active'));
-            document.getElementById('lang-' + lang).classList.add('active');
-            localStorage.setItem('gafur_lang', lang);
-            const tr = translations[lang];
-            document.querySelectorAll('[data-tr]').forEach(el => {
-                const key = el.getAttribute('data-tr');
-                if (tr[key]) el.innerText = tr[key];
+        // Инициализация карты
+        ymaps.ready(init);
+        function init(){
+            var myMap = new ymaps.Map("map", {
+                center: [41.311081, 69.240562], // Ташкент
+                zoom: 12
             });
+
+            // Две тестовые заправки
+            var placemark1 = new ymaps.Placemark([41.311081, 69.240562], { balloonContent: '<b>UzGazOil</b><br>АИ-92: 10500 сум' });
+            var placemark2 = new ymaps.Placemark([41.315000, 69.250000], { balloonContent: '<b>Mustang</b><br>АИ-92: 10700 сум' });
+            myMap.geoObjects.add(placemark1).add(placemark2);
         }
 
-        function setTheme(theme) {
-            document.querySelectorAll('.settings-row button[id^="theme-"]').forEach(b => b.classList.remove('active'));
-            document.getElementById('theme-' + theme).classList.add('active');
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('gafur_theme', theme);
+        // Загрузка сохраненных данных
+        window.onload = function() {
+            let savedCar = localStorage.getItem('myCar');
+            if(savedCar) document.getElementById('carSelect').value = savedCar;
+            renderHistory();
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            setLanguage(localStorage.getItem('gafur_lang') || 'ru');
-            setTheme(localStorage.getItem('gafur_theme') || 'dark');
-            if(localStorage.getItem('gafur_admin_logged') === 'true') {
-                document.getElementById('loginCard').style.display = 'none';
-                document.getElementById('adminPanelContent').style.display = 'flex';
-                loadAdminMessages();
-            }
-        });
-
-        function showToast(text) {
-            const toast = document.getElementById('toast');
-            toast.innerText = text;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        // Сохранение выбранного авто
+        function saveSettings() {
+            localStorage.setItem('myCar', document.getElementById('carSelect').value);
         }
 
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('show');
+        // Добавление расхода
+        function addExpense() {
+            let amount = document.getElementById('expenseAmount').value;
+            if(!amount) return tg.showAlert('Введите сумму!');
+
+            let history = JSON.parse(localStorage.getItem('fuelHistory') || '[]');
+            let date = new Date().toLocaleDateString('ru-RU');
+            
+            history.unshift({ date: date, amount: amount + ' UZS' });
+            localStorage.setItem('fuelHistory', JSON.stringify(history));
+            
+            document.getElementById('expenseAmount').value = '';
+            tg.HapticFeedback.notificationOccurred('success'); // Вибрация
+            renderHistory();
         }
 
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            const sidebar = document.getElementById('sidebar');
-            if(sidebar.classList.contains('open')) {
-                sidebar.classList.remove('open');
-                document.getElementById('overlay').classList.remove('show');
-            }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function togglePlatforms() {
-            document.getElementById('platformsDropdown').classList.toggle('show');
-            document.getElementById('armonToggle').classList.toggle('active');
-        }
-
-        function sendMessage() {
-            const ig = document.getElementById('igAccount').value.trim();
-            const text = document.getElementById('msgText').value.trim();
-            const lang = localStorage.getItem('gafur_lang') || 'ru';
-            if(!ig || !text) {
-                showToast(lang === 'uz' ? 'Maydonlarni to\'ldiring!' : lang === 'en' ? 'Fill in all fields!' : 'Заполните все поля!');
-                return;
-            }
-            const messages = JSON.parse(localStorage.getItem('gafur_messages') || '[]');
-            messages.unshift({ id: Date.now(), ig: ig, text: text, time: new Date().toLocaleString() });
-            localStorage.setItem('gafur_messages', JSON.stringify(messages));
-            showToast(translations[lang].toast_sent);
-            document.getElementById('igAccount').value = '';
-            document.getElementById('msgText').value = '';
-            switchPage('home');
-        }
-
-        function checkAuth() {
-            if(document.getElementById('adminUser').value.trim() === 'gafurdemo' && document.getElementById('adminPass').value.trim() === 'gfd1324') {
-                localStorage.setItem('gafur_admin_logged', 'true');
-                loadAdminMessages();
-                document.getElementById('loginCard').style.display = 'none';
-                document.getElementById('adminPanelContent').style.display = 'flex';
-                showToast('Вход выполнен!');
-            } else showToast('Ошибка!');
-        }
-
-        function logoutAdmin() {
-            localStorage.removeItem('gafur_admin_logged');
-            document.getElementById('adminUser').value = ''; document.getElementById('adminPass').value = '';
-            document.getElementById('loginCard').style.display = 'flex';
-            document.getElementById('adminPanelContent').style.display = 'none';
-        }
-
-        function loadAdminMessages() {
-            const container = document.getElementById('messagesContainer');
-            const messages = JSON.parse(localStorage.getItem('gafur_messages') || '[]');
-            if(messages.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 20px;">Нет новых сообщений</div>';
-                return;
-            }
-            container.innerHTML = '';
-            messages.forEach(msg => {
-                const card = document.createElement('div');
-                card.className = 'admin-msg-card';
-                card.innerHTML = `<div class="msg-header"><span><i class="fa-brands fa-instagram"></i> ${escapeHtml(msg.ig)}</span><span class="msg-time">${msg.time}</span></div>
-                                  <div class="msg-text">${escapeHtml(msg.text)}</div>
-                                  <button class="del-msg-btn" onclick="deleteMessage(${msg.id})">Удалить</button>`;
-                container.appendChild(card);
+        // Отрисовка истории
+        function renderHistory() {
+            let history = JSON.parse(localStorage.getItem('fuelHistory') || '[]');
+            let listHTML = '';
+            history.forEach(item => {
+                listHTML += `<div class="history-item"><span>${item.date}</span><b>${item.amount}</b></div>`;
             });
-        }
-
-        function deleteMessage(id) {
-            localStorage.setItem('gafur_messages', JSON.stringify(JSON.parse(localStorage.getItem('gafur_messages') || '[]').filter(m => m.id !== id)));
-            loadAdminMessages();
-        }
-
-        function escapeHtml(text) { return text.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m])); }
-
-        function sharePage() {
-            const lang = localStorage.getItem('gafur_lang') || 'ru';
-            navigator.share ? navigator.share({ title: 'Gafur Demo', url: window.location.href }).catch(()=>{}) 
-                           : (navigator.clipboard.writeText(window.location.href), showToast(translations[lang].toast_copied));
+            document.getElementById('historyList').innerHTML = listHTML || 'Пока пусто';
         }
     </script>
 </body>
