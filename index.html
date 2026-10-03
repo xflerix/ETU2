@@ -3,114 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>АЗС Радар УЗ</title>
+    <title>UzFuel Tracker</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=21142e8f-7848-4389-bedc-994119d67566&lang=ru_RU"></script>
     <style>
+        :root {
+            /* Подтягиваем цвета из темы Telegram пользователя */
+            --bg-main: var(--tg-theme-bg-color, #f3f2f8);
+            --bg-card: var(--tg-theme-secondary-bg-color, #ffffff);
+            --text-main: var(--tg-theme-text-color, #000000);
+            --text-hint: var(--tg-theme-hint-color, #8e8e93);
+            --accent: var(--tg-theme-button-color, #007aff);
+            --accent-text: var(--tg-theme-button-text-color, #ffffff);
+            --border-color: rgba(120, 120, 128, 0.2);
+        }
+
         body { 
-            margin: 0; padding: 0; font-family: sans-serif; 
-            background: var(--tg-theme-bg-color, #1c1c1d); 
-            color: var(--tg-theme-text-color, #ffffff);
+            margin: 0; padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif; 
+            background: var(--bg-main); 
+            color: var(--text-main);
+            overflow-x: hidden;
         }
-        #map { width: 100vw; height: 50vh; }
-        .panel { padding: 15px; }
+
+        /* Контейнер карты */
+        .map-wrapper { width: 100vw; height: 45vh; position: relative; z-index: 1; }
+        #map { width: 100%; height: 100%; }
+
+        /* Красивая шторка поверх карты */
+        .ui-container {
+            background: var(--bg-main);
+            border-radius: 24px 24px 0 0;
+            padding: 20px;
+            position: relative;
+            margin-top: -24px;
+            z-index: 2;
+            min-height: 60vh;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Стиль карточек (как в iPhone) */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-hint);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Инпуты и селекты */
         select, input {
-            width: 100%; padding: 10px; margin-bottom: 10px;
-            border-radius: 8px; border: 1px solid #333;
-            background: var(--tg-theme-secondary-bg-color, #2c2c2e);
-            color: var(--tg-theme-text-color, #ffffff);
-            box-sizing: border-box; font-size: 16px;
+            width: 100%;
+            border: none;
+            background: var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            color: var(--text-main);
+            outline: none;
+            -webkit-appearance: none;
+            box-sizing: border-box;
+            font-family: inherit;
         }
-        .btn { 
-            display: block; width: 100%; padding: 14px; margin-top: 10px;
-            background: var(--tg-theme-button-color, #007aff); 
-            color: var(--tg-theme-button-text-color, #fff);
-            border: none; border-radius: 8px; font-weight: bold; font-size: 16px;
+        
+        input::placeholder { color: var(--text-hint); }
+
+        /* Главная кнопка */
+        .primary-btn {
+            background: var(--accent);
+            color: var(--accent-text);
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
         }
-        .history { margin-top: 20px; font-size: 14px; }
-        .history-item { 
-            padding: 10px; border-bottom: 1px solid #333; 
-            display: flex; justify-content: space-between;
+        .primary-btn:active { transform: scale(0.98); opacity: 0.8; }
+
+        /* Список истории */
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
         }
-    </style>
+        .history-item:last-child { border-bottom: none; padding-bottom: 0; }
+        
+        .h-left { display: flex; flex-direction: column; gap: 4px; }
+        .h-desc { font-size: 15px; font-weight: 500; }
+        .h-date { font-size: 13px; color: var(--text-hint); }
+        .h-amount { font-size: 16px; font-weight: 700; color: var(--text-main); }
+        
+        .empty-state {
+            text-align: center;
+            color: var(--text-hint);
+            font-size: 14px;
+            padding: 10px 0;
+        }
+    </script>
 </head>
 <body>
 
-    <div id="map"></div>
+    <div class="map-wrapper">
+        <div id="map"></div>
+    </div>
     
-    <div class="panel">
-        <h3>Мое авто</h3>
-        <select id="carSelect" onchange="saveSettings()">
-            <option value="Chevrolet Onix Premier">Chevrolet Onix Premier</option>
-            <option value="Chevrolet Cobalt">Chevrolet Cobalt</option>
-            <option value="Chevrolet Malibu 2 Premier">Chevrolet Malibu 2 Premier</option>
-            <option value="Daewoo Matiz (белый)">Daewoo Matiz</option>
-        </select>
-
-        <h3>Добавить заправку</h3>
-        <input type="number" id="expenseAmount" placeholder="Сумма в сумах (например, 150000)">
-        <button class="btn" onclick="addExpense()">Записать расход</button>
-
-        <div class="history">
-            <h3>История заправок</h3>
-            <div id="historyList">Пока пусто</div>
+    <div class="ui-container">
+        
+        <div class="card">
+            <div class="card-title">🚗 Мой автомобиль</div>
+            <select id="carSelect" onchange="saveSettings()">
+                <option value="Onix Premier">Chevrolet Onix Premier</option>
+                <option value="Cobalt">Chevrolet Cobalt</option>
+                <option value="Malibu 2">Chevrolet Malibu 2 Premier</option>
+                <option value="Matiz (Белый)">Daewoo Matiz (Белый)</option>
+            </select>
         </div>
+
+        <div class="card">
+            <div class="card-title">⛽ Добавить заправку</div>
+            <input type="number" id="expenseAmount" placeholder="Сумма (например, 150000)">
+            <button class="primary-btn" onclick="addExpense()">
+                <span>💳 Записать расход</span>
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🕒 История расходов</div>
+            <div id="historyList">
+                <div class="empty-state">У вас пока нет записей</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready();
 
-        // Инициализация карты
+        // Подключаем карту
         ymaps.ready(init);
         function init(){
             var myMap = new ymaps.Map("map", {
-                center: [41.311081, 69.240562], // Ташкент
-                zoom: 12
+                center: [41.311081, 69.240562], 
+                zoom: 12,
+                controls: ['zoomControl']
             });
 
-            // Две тестовые заправки
             var placemark1 = new ymaps.Placemark([41.311081, 69.240562], { balloonContent: '<b>UzGazOil</b><br>АИ-92: 10500 сум' });
             var placemark2 = new ymaps.Placemark([41.315000, 69.250000], { balloonContent: '<b>Mustang</b><br>АИ-92: 10700 сум' });
             myMap.geoObjects.add(placemark1).add(placemark2);
         }
 
-        // Загрузка сохраненных данных
+        // Загрузка при открытии
         window.onload = function() {
             let savedCar = localStorage.getItem('myCar');
             if(savedCar) document.getElementById('carSelect').value = savedCar;
             renderHistory();
         }
 
-        // Сохранение выбранного авто
         function saveSettings() {
             localStorage.setItem('myCar', document.getElementById('carSelect').value);
+            tg.HapticFeedback.selectionChanged();
         }
 
-        // Добавление расхода
         function addExpense() {
             let amount = document.getElementById('expenseAmount').value;
-            if(!amount) return tg.showAlert('Введите сумму!');
+            let car = document.getElementById('carSelect').value;
+            
+            if(!amount) {
+                tg.HapticFeedback.notificationOccurred('error');
+                return tg.showAlert('Пожалуйста, введите сумму заправки!');
+            }
 
             let history = JSON.parse(localStorage.getItem('fuelHistory') || '[]');
-            let date = new Date().toLocaleDateString('ru-RU');
             
-            history.unshift({ date: date, amount: amount + ' UZS' });
+            // Форматируем дату красиво
+            let date = new Date();
+            let dateString = date.toLocaleDateString('ru-RU', {day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit'});
+            
+            // Форматируем сумму с пробелами (например, 150 000)
+            let formattedAmount = parseInt(amount).toLocaleString('ru-RU') + ' UZS';
+            
+            history.unshift({ date: dateString, amount: formattedAmount, car: car });
+            
+            // Храним только последние 10 записей, чтобы не забивать память
+            if(history.length > 10) history.pop(); 
+            
             localStorage.setItem('fuelHistory', JSON.stringify(history));
             
             document.getElementById('expenseAmount').value = '';
-            tg.HapticFeedback.notificationOccurred('success'); // Вибрация
+            tg.HapticFeedback.notificationOccurred('success');
             renderHistory();
         }
 
-        // Отрисовка истории
         function renderHistory() {
             let history = JSON.parse(localStorage.getItem('fuelHistory') || '[]');
             let listHTML = '';
+            
+            if(history.length === 0) {
+                document.getElementById('historyList').innerHTML = '<div class="empty-state">У вас пока нет записей</div>';
+                return;
+            }
+
             history.forEach(item => {
-                listHTML += `<div class="history-item"><span>${item.date}</span><b>${item.amount}</b></div>`;
+                listHTML += `
+                <div class="history-item">
+                    <div class="h-left">
+                        <span class="h-desc">Заправка: ${item.car}</span>
+                        <span class="h-date">${item.date}</span>
+                    </div>
+                    <div class="h-amount">${item.amount}</div>
+                </div>`;
             });
-            document.getElementById('historyList').innerHTML = listHTML || 'Пока пусто';
+            document.getElementById('historyList').innerHTML = listHTML;
         }
     </script>
 </body>
